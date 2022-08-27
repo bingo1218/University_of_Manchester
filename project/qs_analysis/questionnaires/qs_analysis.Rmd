@@ -12,6 +12,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Load packages
 
 ```{r}
+library(tidyverse)
+```
 
+## Load data
+```{r}
+file_path <- "D:/UoM/data/qs_data/Memory+and+Attention+-+pre-questionnaire_August+22,+2022_09.05/Memory and Attention - pre-questionnaire_August 22, 2022_09.05.xlsx"
+qs <- read_xlsx(file_path,skip = 1)
+
+qs_demographic <- qs %>%
+  select(Number)
 ```
 
