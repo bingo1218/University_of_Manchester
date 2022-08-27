@@ -1,0 +1,17 @@
+"0","my_data <- read_csv('all_data_craving_ERD_tra_rest.csv')"
+"2","[1mRows: [22m[34m48[39m [1mColumns: [22m[34m46[39m
+"
+"2","[36m--[39m [1mColumn specification[22m [36m-------------------------------------------[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m  (1): drug
+[32mdbl[39m (45): subjects, age, handness, education_years, addiction_y...
+"
+"2","
+[36mi[39m Use [38;5;251m[48;5;235m[38;5;251m[48;5;235m`spec()`[48;5;235m[38;5;251m[49m[39m to retrieve the full column specification for this data.
+[36mi[39m Specify the column types or set [38;5;251m[48;5;235m[38;5;251m[48;5;235m`show_col_types = FALSE`[48;5;235m[38;5;251m[49m[39m to quiet this message.
+"
+"0","#my_data <- read.table('all_data_collection_final.csv', header = TRUE, sep = "","")"
+"0","my_data_46 <- subset(my_data, select = -c(drug,BDI))"
+"0","my_data_41 <- subset(my_data, selec = -c(drug))"
+"0","my_data_46 <- na.omit(my_data_46)"
+"0","my_data_41 <- na.omit(my_data_41)"

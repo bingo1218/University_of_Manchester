@@ -1,0 +1,6 @@
+"0","cors <- function(df) { "
+"0","   # turn all three matrices (r, n, and P into a data frame)"
+"0","   M <- Hmisc::rcorr(as.matrix(df))"
+"0","   # return the three data frames in a list return(Mdf)"
+"0","   Mdf <- map(M, ~data.frame(.x))"
+"0","  }"

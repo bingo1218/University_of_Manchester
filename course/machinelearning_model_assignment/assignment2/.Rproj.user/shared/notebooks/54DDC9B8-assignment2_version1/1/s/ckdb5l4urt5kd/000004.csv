@@ -1,0 +1,1 @@
+"0","plot(effect(""medv"", mod = lm.bs.medv4, partial.residuals = TRUE))"

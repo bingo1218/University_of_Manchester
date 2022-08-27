@@ -1,0 +1,5 @@
+"0","Q3_summarised <- Q3_tidied %>%"
+"0","  group_by(Prime, Target) %>%"
+"0","  summarise(mean = mean(RT), sd = sd (RT), median_RT = median(RT), n())"
+"2","`summarise()` has grouped output by 'Prime'. You can override using the `.groups` argument.
+"

@@ -1,0 +1,6 @@
+"0",""
+"0","#normality assumption"
+"0","df1 %>%"
+"0","  group_by(condition) %>%"
+"0","  shapiro_test(response_time) %>%"
+"0","  arrange(variable)"

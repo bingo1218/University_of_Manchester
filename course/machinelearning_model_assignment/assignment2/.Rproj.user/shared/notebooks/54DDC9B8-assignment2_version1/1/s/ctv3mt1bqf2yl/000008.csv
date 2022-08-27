@@ -1,0 +1,6 @@
+"0","model.fit <- lm.ns.medv5 <- lm(nox ~ poly(age,3) + ns(dis,4) + bs(lstat,8)"
+"0","                   + ns(medv,5),"
+"0","                      data = RegressionData)"
+"0",""
+"0","par(mfrow = c(2, 3))"
+"0","plot(model.fit)"

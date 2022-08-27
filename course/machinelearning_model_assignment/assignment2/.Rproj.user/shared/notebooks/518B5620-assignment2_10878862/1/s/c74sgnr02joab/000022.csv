@@ -1,0 +1,6 @@
+"0",""
+"0","# We will now plot a red dot to indicate the model with the largest adjusted R^2 statistic."
+"0",""
+"0","adj_r2_max = which.max(reg_summary$adjr2) # 11"
+"0",""
+"0","points(adj_r2_max, reg_summary$adjr2[adj_r2_max], col =""red"", cex = 2, pch = 20)"

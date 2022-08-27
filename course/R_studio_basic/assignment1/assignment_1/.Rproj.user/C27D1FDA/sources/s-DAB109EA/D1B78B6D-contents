@@ -1,0 +1,70 @@
+# assignment_1 by ZHB
+## data wrangling and tiding
+
+library(tidyverse)
+library(Hmisc)
+
+### load data
+experiment_data <- read.csv("assignment_1_data.csv")
+
+head(experiment_data)
+
+### transfer the dataset to long format and attribute the data name
+experiment_data_longer <- experiment_data %>%
+  pivot_longer(cols = c(Condition1, Condition2, Condition3, Condition4),
+               names_to = "Condition",
+               values_to = "RT") %>%
+  mutate(Condition = recode(Condition,
+                            "Condition1" = "Num_Num",
+                            "Condition2" = "Num_Let", 
+                            "Condition3" = "Let_Num", 
+                            "Condition4" = "Let_Let")) %>%
+  filter(!is.na(Condition))
+
+head(experiment_data_longer)
+
+## report the summary statiscs for each of the 4 conditions
+experiment_data_longer %>%
+  group_by(Condition) %>%
+  summarise(mean_RT = mean(RT), sd_RT = sd(RT), median = median(RT), qs = quantile(RT, c(0.25, 0.75)), prob = c(0.25, 0.75), number = n())
+
+## visualization
+### plot1: the density to view the distribution in four conditions 
+
+### plot2: the violin/point/box plot for each of  4 conditions
+experiment_data_longer %>%
+  ggplot(aes(x = Condition, y = RT, colour = Condition)) +
+  geom_violin() +
+  geom_jitter(width = .2, alpha = .45, size = 2) + 
+  geom_boxplot(alpha = .5) + 
+  guides(colour = 'none') + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 0, vjust = 5, hjust = .5)) +
+  labs(title = "Response Time among Different Conditions",
+       x = "Condtion (Expectation_Target)",
+       y = "Response Time (ms)")
+
+### plot3: the trends of changes for each of 4 conditions
+experiment_data_longer %>%
+  ggplot(aes(x = Condition, y = RT)) + 
+  geom_line(ID = ID)
+
+  
+
+experiment_data_longer <- experiment_data_longer %>%
+  pivot_longer(cols = c(Condition1, Condition2, Condition3, Condition4),
+               names_to = "Condition",
+               values_to = "RT") %>%
+  mutate(Condition = recode(Condition,
+                            "Condition1" = "Num_Num",
+                            "Condition2" = "Num_Let", 
+                            "Condition3" = "Let_Num", 
+                            "Condition4" = "Let_Let"))
+experiment_data_longer <- experiment_data_fil %>%
+  pivot_longer(cols = c(Condition1, Condition2, Condition3, Condition4),
+               names_to = "Condition",
+               values_to = "RT")
+tidied_data <- experiment_data_longer %>%
+  separate(col = "Condition", into = c("Expectation", "Target"),
+           sep = "_") %>%
+  

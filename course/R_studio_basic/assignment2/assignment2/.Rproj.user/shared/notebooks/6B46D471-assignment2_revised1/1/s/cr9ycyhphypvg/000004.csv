@@ -1,0 +1,4 @@
+"0","knitr::kable("
+"0","  Q3_summarised, "
+"0","  caption = ""The profile of response time in four conditions"", col.names = c('Prime', 'Target', 'mean (ms)', 'SD (ms)', 'median (ms)', 'N'), digits = 0, format.args = list(big.mark = "","","
+"0","  scientific = FALSE), align = ""llllll"")"

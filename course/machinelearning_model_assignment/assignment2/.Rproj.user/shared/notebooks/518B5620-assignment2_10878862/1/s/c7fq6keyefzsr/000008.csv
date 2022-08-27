@@ -1,0 +1,6 @@
+"0","lm.fit.age3 = lm(nox ~ poly(age,3) + dis + lstat + medv,"
+"0","                      data = RegressionData)"
+"0",""
+"0","plot(effect(""age"", mod = lm.fit.age3, partial.residuals = TRUE))"
+"2","NOTE: age does not appear in the model
+"

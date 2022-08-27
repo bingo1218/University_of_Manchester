@@ -1,0 +1,25 @@
+"0","model2_lm1
+"
+"1","
+Call:
+"
+"1",""
+"1","lm(formula = RT ~ condition + caffeine, data = Q2_fil)"
+"1",""
+"1","
+
+"
+"1","Coefficients:
+"
+"1","     (Intercept)  "
+"1","conditionDegrade  "
+"1","        caffeine  "
+"1","
+"
+"1","         998.564  "
+"1","          12.791  "
+"1","           2.469  "
+"1","
+"
+"1","
+"

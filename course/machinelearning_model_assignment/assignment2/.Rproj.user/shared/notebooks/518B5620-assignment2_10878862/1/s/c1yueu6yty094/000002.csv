@@ -1,0 +1,2 @@
+"0","regfit_full = regsubsets(nox~., data = RegressionData, nvmax = 4)"
+"0","reg_summary <- summary(regfit_full)"

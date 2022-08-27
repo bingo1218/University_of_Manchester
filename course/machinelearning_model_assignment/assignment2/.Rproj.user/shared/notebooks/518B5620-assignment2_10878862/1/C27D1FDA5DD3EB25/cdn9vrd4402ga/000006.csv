@@ -1,0 +1,14 @@
+"0","lm.fit.medv3 = lm(nox ~ poly(age,3) + ns(dis,4) + bs(lstat,8)"
+"0","                   + poly(medv,3),"
+"0","                 data = RegressionData)"
+"0","lm.fit.medv4 <- lm(nox ~ poly(age,3) + ns(dis,4) + bs(lstat,8)"
+"0","                   + poly(medv,4),"
+"0","                      data = RegressionData,"
+"0","                      method = ""lm"", trControl = train_control)"
+"2","method = 'lm' is not supported. Using 'qr'"
+"2","In lm.fit(x, y, offset = offset, singular.ok = singular.ok, ...) :
+ extra argument ‘trControl’ will be disregarded"
+"0","par(mfrow = c(2,2))"
+"0","plot(effect(""medv"", mod = lm.fit.medv3, partial.residuals = TRUE))"
+"2","NOTE: medv does not appear in the model
+"

@@ -1,0 +1,4 @@
+"0","mydata_cor <- Hmisc::rcorr(as.matrix(my_data_46))"
+"0","mydata_41_cor <- Hmisc::rcorr(as.matrix(my_data_41))"
+"0",""
+"0","data.frame(mydata_cor$r) %>% head() %>% kable()"

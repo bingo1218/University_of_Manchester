@@ -1,0 +1,7 @@
+"0","# check homogneity of variance assumption(The Levene’s test is significant (p > 0.05), so there was homogeneity of variances.)"
+"0","df2 %>% "
+"0","  gather(key = ""variable"", value = ""value"", response_time, caffeine) %>%"
+"0","  group_by(variable) %>%"
+"0","  levene_test(value ~ condition)"
+"2","group coerced to factor."
+"2","group coerced to factor."

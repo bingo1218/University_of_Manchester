@@ -1,0 +1,6 @@
+"0","dfn_best <- mod.comp$Inputs[which.max(mod.comp$Accuracy)]"
+"0","dfn_best"
+"1","[1]"
+"1"," 4"
+"1","
+"

@@ -1,0 +1,12 @@
+"0","experiment_data_longer <- experiment_data_fil %>%"
+"0","  pivot_longer(cols = c(Condition1, Condition2, Condition3, Condition4),"
+"0","               names_to = ""Condition"","
+"0","               values_to = ""RT"") %>%"
+"0","  mutate(Condition = recode(Condition,"
+"0","                            ""Condition1"" = ""Num_Num"","
+"0","                            ""Condition2"" = ""Num_Let"", "
+"0","                            ""Condition3"" = ""Let_Num"", "
+"0","                            ""Condition4"" = ""Let_Let""))"
+"2","Error in pivot_longer(., cols = c(Condition1, Condition2, Condition3,  : 
+  object 'experiment_data_fil' not found
+"

@@ -1,0 +1,27 @@
+"0","my_data2 <- read_csv('all_data_craving_ERP.csv')"
+"2","[1mRows: [22m[34m48[39m [1mColumns: [22m[34m41[39m
+"
+"2","[36m--[39m [1mColumn specification[22m [36m-------------------------------------------[39m
+[1mDelimiter:[22m "",""
+[32mdbl[39m (41): subjects, age, handness, education_years, addiction_y...
+"
+"2","
+[36mi[39m Use [38;5;251m[48;5;235m[38;5;251m[48;5;235m`spec()`[48;5;235m[38;5;251m[49m[39m to retrieve the full column specification for this data.
+[36mi[39m Specify the column types or set [38;5;251m[48;5;235m[38;5;251m[48;5;235m`show_col_types = FALSE`[48;5;235m[38;5;251m[49m[39m to quiet this message.
+"
+"0","#my_data <- read.table('all_data_collection_final.csv', header = TRUE, sep = "","")"
+"0","my_data2_46 <- subset(my_data2, select = -c(BDI))"
+"0","my_data2_46 <- na.omit(my_data2_46)"
+"0",""
+"0","windowsFonts(""Arial"" = windowsFont(""Arial""))"
+"0","plot_final2 <- formatted_cors(my_data2_46) %>%"
+"0","  ggplot(aes(measure1, measure2, fill=r, label=round(r_if_sig,2))) +"
+"0","  geom_tile() +"
+"0","  labs(x = NULL, y = NULL, fill = ""Pearson's\nCorrelation"", title=""Correlations in mydata"", subtitle=""Only significant Pearson's correlation coefficients shown"") + scale_fill_gradient2(mid=""#FBFEF9"",low=""#0C6291"",high=""#A63446"", limits=c(-1,1)) +"
+"0","  geom_text() +"
+"0","  theme_classic() +"
+"0","  scale_x_discrete(expand=c(0,0)) +"
+"0","  scale_y_discrete(expand=c(0,0)) +"
+"0","  theme(text=element_text(family=""Arial"")) + "
+"0","  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))"
+"0","plot_final2"

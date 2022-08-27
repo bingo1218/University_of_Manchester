@@ -1,0 +1,6 @@
+"0","Q1_tided <- Q1 %>%"
+"0","  mutate(condition = factor(condition)) %>%"
+"0","  rename(RT = response_time) %>%"
+"0","  mutate(condition = dplyr::recode(condition,"
+"0","                            ""condition_a"" = ""Normal"","
+"0","                            ""condition_b"" = ""Degrade""))"

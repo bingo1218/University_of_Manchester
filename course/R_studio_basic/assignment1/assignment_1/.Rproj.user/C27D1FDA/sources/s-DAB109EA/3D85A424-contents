@@ -1,0 +1,146 @@
+---
+title: "correlation_test"
+author: "zhb"
+date: "13/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### load packages
+### original link: https://towardsdatascience.com/customizable-correlation-plots-in-r-b1d2856a4b05
+
+```{r}
+library(tidyverse)
+library(Hmisc)
+library(corrplot)
+library(knitr)
+library(ppcor)
+```
+
+### read in data
+
+```{r}
+my_data <- read_csv('all_data_craving_ERD_tra_rest.csv')
+#my_data <- read.table('all_data_collection_final.csv', header = TRUE, sep = ",")
+my_data_46 <- subset(my_data, select = -c(drug,BDI))
+my_data_41 <- subset(my_data, selec = -c(drug))
+my_data_46 <- na.omit(my_data_46)
+my_data_41 <- na.omit(my_data_41)
+```
+
+### prepare for the correlation heatmap
+
+```{r}
+mydata_cor <- Hmisc::rcorr(as.matrix(my_data_46))
+mydata_41_cor <- Hmisc::rcorr(as.matrix(my_data_41))
+
+data.frame(mydata_cor$r) %>% head() %>% kable()
+data.frame(mydata_cor$p) %>% head() %>% kable()
+data.frame(mydata_cor$n) %>% head(n=3) %>% kable()
+
+```
+
+```{r}
+data.frame(mydata_41_cor$r) %>% head() %>% kable()
+data.frame(mydata_41_cor$P) %>% head() %>% kable()
+data.frame(mydata_41_cor$n) %>% head(n=3) %>% kable()
+```
+
+### Next, we can write a function that formats a data frame correctly for Hmisc::rcorr() and then turns each of the three elements of the list ( r, n and P)
+
+```{r}
+cors <- function(df) { 
+   # turn all three matrices (r, n, and P into a data frame)
+   M <- Hmisc::rcorr(as.matrix(df))
+   # return the three data frames in a list return(Mdf)
+   Mdf <- map(M, ~data.frame(.x))
+  }
+```
+
+```{r}
+cors(my_data_46) %>% first() %>% head() %>% kable()
+cors(my_data_41) %>% first() %>% head() %>% kable()
+
+cors(my_data_46) %>% 
+   map(~rownames_to_column(.x, var="measure1")) %>%
+   # look at the first element of the list (r)
+   first() %>%
+   head() %>%
+   kable()
+cors(my_data_41) %>% 
+   map(~rownames_to_column(.x, var="measure1")) %>%
+   # look at the first element of the list (r)
+   first() %>%
+   head() %>%
+   kable()
+```
+
+```{r}
+formatted_cors <- function(df){
+ cors(df) %>%
+ map(~rownames_to_column(.x, var="measure1")) %>%
+ map(~pivot_longer(.x, -measure1, "measure2")) %>% 
+ bind_rows(.id = "id") %>%
+ pivot_wider(names_from = id, values_from = value) %>%
+ mutate(sig_p = ifelse(P < .05, T, F), p_if_sig = ifelse(P <.05, P, NA), r_if_sig = ifelse(P <.05, r, NA)) 
+}
+```
+
+```{r}
+  windowsFonts("Arial" = windowsFont("Arial"))
+plot_final <- formatted_cors(my_data_46) %>%
+  ggplot(aes(measure1, measure2, fill=r, label=round(r_if_sig,2))) +
+  geom_tile() +
+  labs(x = NULL, y = NULL, fill = "Pearson's\nCorrelation", title="Correlations in mydata", subtitle="Only significant Pearson's correlation coefficients shown") + scale_fill_gradient2(mid="#FBFEF9",low="#0C6291",high="#A63446", limits=c(-1,1)) +
+  geom_text() +
+  theme_classic() +
+  scale_x_discrete(expand=c(0,0)) +
+  scale_y_discrete(expand=c(0,0)) +
+  theme(text=element_text(family="Arial")) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))
+plot_final
+#formatted_cors(my_data_41) %>% head() %>% kable()
+```
+
+```{r}
+my_data2 <- read_csv('all_data_craving_ERP.csv')
+#my_data <- read.table('all_data_collection_final.csv', header = TRUE, sep = ",")
+my_data2_46 <- subset(my_data2, select = -c(BDI))
+my_data2_46 <- na.omit(my_data2_46)
+
+windowsFonts("Arial" = windowsFont("Arial"))
+plot_final2 <- formatted_cors(my_data2_46) %>%
+  ggplot(aes(measure1, measure2, fill=r, label=round(r_if_sig,2))) +
+  geom_tile() +
+  labs(x = NULL, y = NULL, fill = "Pearson's\nCorrelation", title="Correlations in mydata", subtitle="Only significant Pearson's correlation coefficients shown") + scale_fill_gradient2(mid="#FBFEF9",low="#0C6291",high="#A63446", limits=c(-1,1)) +
+  geom_text() +
+  theme_classic() +
+  scale_x_discrete(expand=c(0,0)) +
+  scale_y_discrete(expand=c(0,0)) +
+  theme(text=element_text(family="Arial")) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))
+plot_final2
+```
+
+```{r}
+pcor.test(my_data2$cue_craving, my_data2$`drug cue` ,(my_data2[,c("addiction_years","relative_beta")]))#c,d is controlling variable
+
+my_data2 %>%
+  ggplot(aes(x = abtinent_days, y = `(drug - nuetral)/neutral_LPP`)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) 
+
+my_data2_46 %>%
+  ggplot() +
+  geom_point(aes(x = abtinent_days, y = `neutral cue`, color = "neutral cue"), color = "black", show.legend = TRUE, shape = 21,alpha = 0.8, size = 2, stroke = 1) +
+  geom_smooth(aes(x = abtinent_days, y = `neutral cue`),method = "lm", se = TRUE, color = "black") +
+  geom_point(aes(x = abtinent_days, y = `drug cue`), color = "red", shape = 21,alpha = 0.8, size = 2, stroke = 1, show.legend = TRUE) + 
+  geom_smooth(aes(x = abtinent_days, y = `drug cue`),method = "lm", se = TRUE, color = "red") + 
+  theme_classic() +
+  guides(colour = "black")
+
+```
+

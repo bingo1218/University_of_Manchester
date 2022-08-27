@@ -1,0 +1,18 @@
+"0","#Q2"
+"0","df2 <- read_csv('assignment_2_dataset_2.csv')"
+"2","[1mRows: [22m[34m96[39m [1mColumns: [22m[34m4[39m
+"
+"2","[36m--[39m [1mColumn specification[22m [36m-------------------------------------------[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m (1): condition
+[32mdbl[39m (3): participant, response_time, caffeine
+"
+"2","
+[36mi[39m Use [38;5;251m[48;5;235m[38;5;251m[48;5;235m`spec()`[48;5;235m[38;5;251m[49m[39m to retrieve the full column specification for this data.
+[36mi[39m Specify the column types or set [38;5;251m[48;5;235m[38;5;251m[48;5;235m`show_col_types = FALSE`[48;5;235m[38;5;251m[49m[39m to quiet this message.
+"
+"0","#visualiazation"
+"0","ggboxplot("
+"0","  df2, x = ""condition"", y = c(""response_time"", ""caffeine""), "
+"0","  merge = TRUE, palette = ""jco"""
+"0","  )"

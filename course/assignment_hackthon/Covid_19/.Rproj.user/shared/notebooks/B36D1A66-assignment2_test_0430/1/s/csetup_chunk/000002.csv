@@ -1,0 +1,5 @@
+"0","knitr::opts_chunk$set(warning = FALSE, message = FALSE)"
+"2","Warning message:
+"
+"2","package ‘sp’ was built under R version 4.1.2 
+"

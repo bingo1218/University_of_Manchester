@@ -1,0 +1,2 @@
+This data is from Response2covid19, a dataset of governments’ responses to  COVID-19 all around the world
+The dataset is downloaded from github, the link is: https://github.com/simonporcher/COVID-19-Governments-Responses

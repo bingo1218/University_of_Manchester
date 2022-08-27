@@ -1,0 +1,1 @@
+"0","plot(predict(model.fit), rstudent(model.fit))"

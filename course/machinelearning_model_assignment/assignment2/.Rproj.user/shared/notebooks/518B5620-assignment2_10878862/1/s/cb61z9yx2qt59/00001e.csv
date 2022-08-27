@@ -1,0 +1,1 @@
+"0","plot(effect(""Sales"", mod = fit, partial.residuals=TRUE), type=""link"")"

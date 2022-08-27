@@ -1,0 +1,3 @@
+"0","  lm.bs.age3 <- lm(nox ~ bs(age,df = 4) + dis + lstat + medv,"
+"0","               data = RegressionData)"
+"0","  plot(effect(""age"", mod = lm.bs.age3, partial.residuals = TRUE))"

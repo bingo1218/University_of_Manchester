@@ -1,0 +1,3 @@
+"0",""
+"0","# We'll do the same for C_p and BIC."
+"0","plot(reg_summary$cp, xlab = ""Number of Variables"", ylab = ""Cp"", type = ""l"")"

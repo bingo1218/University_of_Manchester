@@ -1,0 +1,15 @@
+"0","experiment_data_longer %>%
+  ggplot(aes(x = Condition, y = RT, colour = Condition)) +
+  geom_violin() +
+  geom_jitter(width = .2, alpha = .45, size = 2) + 
+  geom_boxplot(alpha = .5) + 
+  guides(colour = 'none') + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 0, vjust = 5, hjust = .5)) +
+  labs(title = ""Response Time among Different Conditions"",
+       x = ""Condtion (Expectation_Target)"",
+       y = ""Response Time (ms)"")
+"
+"2","Error in experiment_data_longer %>% ggplot(aes(x = Condition, y = RT,  : 
+  could not find function ""%>%""
+"

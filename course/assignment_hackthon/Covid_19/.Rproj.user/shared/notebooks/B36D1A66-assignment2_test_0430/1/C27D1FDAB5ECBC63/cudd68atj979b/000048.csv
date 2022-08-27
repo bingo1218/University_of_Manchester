@@ -1,0 +1,13 @@
+"0","Natural_death <- read_csv(""Natural_death_rate.csv"") %>%
+  rename(region = `Country Name`) %>%
+  select(region)
+"
+"2","[1mRows: [22m[34m266[39m [1mColumns: [22m[34m66[39m"
+"2","[36m--[39m [1mColumn specification[22m [36m----------------------------------------------[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m  (4): Country Name, Country Code, Indicator Name, Indicator Code
+[32mdbl[39m (61): 1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 19...
+[33mlgl[39m  (1): 2021"
+"2","
+[36mi[39m Use `spec()` to retrieve the full column specification for this data.
+[36mi[39m Specify the column types or set `show_col_types = FALSE` to quiet this message."

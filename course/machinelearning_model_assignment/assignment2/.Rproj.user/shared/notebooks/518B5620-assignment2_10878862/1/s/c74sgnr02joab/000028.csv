@@ -1,0 +1,2 @@
+"0",""
+"0","plot(reg_summary$bic, xlab = ""Number of Variables"", ylab = ""BIC"", type = ""l"")"

@@ -1,0 +1,7 @@
+"0",""
+"0","cors(my_data_46) %>% "
+"0","   map(~rownames_to_column(.x, var=""measure1"")) %>%"
+"0","   # look at the first element of the list (r)"
+"0","   first() %>%"
+"0","   head() %>%"
+"0","   kable()"

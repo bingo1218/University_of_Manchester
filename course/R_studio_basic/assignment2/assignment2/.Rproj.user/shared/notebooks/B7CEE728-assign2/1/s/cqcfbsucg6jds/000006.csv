@@ -1,0 +1,6 @@
+"0",""
+"0","#normality assumption(好像有非正态的)"
+"0","df2 %>%"
+"0","  group_by(condition) %>%"
+"0","  shapiro_test(response_time, caffeine) %>%"
+"0","  arrange(variable)"

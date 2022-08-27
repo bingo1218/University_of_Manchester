@@ -1,0 +1,4 @@
+"0","knitr::kable("
+"0","  Q1_summarize, "
+"0","  caption = ""Profile of reaction time (RT) in two conditions"", col.names = c('condition', 'Mean(ms)', 'SD (ms)', 'SE (ms)', 'median (ms)', 'max (ms)', 'min (ms)', '25% quantile (ms)', '75% quantile (ms)', 'variance (ms)', 'N'), digits = 0, format.args = list(big.mark = "","","
+"0","  scientific = FALSE), align = ""lllllllllll"")"

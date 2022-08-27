@@ -1,0 +1,4 @@
+"0","Q3_tided <- Q3_longer %>%"
+"0","  separate(col = ""valence"", into = c(""Prime"", ""Target""),"
+"0","           sep = ""_"") %>%"
+"0","      mutate(Prime = factor(Prime), Target = factor(Target))"

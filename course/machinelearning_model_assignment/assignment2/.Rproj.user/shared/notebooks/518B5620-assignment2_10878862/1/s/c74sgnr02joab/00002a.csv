@@ -1,0 +1,2 @@
+"0","bic_min = which.min(reg_summary$bic) # 6"
+"0","points(bic_min, reg_summary$bic[bic_min], col = ""red"", cex = 2, pch = 20)"

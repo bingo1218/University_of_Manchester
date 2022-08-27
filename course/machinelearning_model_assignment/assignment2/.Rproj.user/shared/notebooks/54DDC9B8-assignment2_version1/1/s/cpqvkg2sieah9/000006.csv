@@ -1,0 +1,5 @@
+"0","fit.dis <- lm(nox ~ poly(age,3) + dis + lstat + medv,"
+"0","                      data = RegressionData,"
+"0","                      method = ""lm"")"
+"0","plot(effect(""dis"", mod = fit.dis, partial.residuals = TRUE))"
+"0",""

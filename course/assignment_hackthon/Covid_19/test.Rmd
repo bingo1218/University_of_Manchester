@@ -1,0 +1,15 @@
+---
+title: "Untitled"
+author: '10878862'
+date: "05/05/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Reference
+<div id="Porcher, S. (2020). Response2covid19, a dataset of governments’ responses to COVID-19 all around the world. Scientific data, 7(1), 1-9."></div>
+
+<div id="Hasell, J., Mathieu, E., Beltekian, D., Macdonald, B., Giattino, C., Ortiz-Ospina, E., ... & Ritchie, H. (2020). A cross-country database of COVID-19 testing. Scientific data, 7(1), 1-7."></div>

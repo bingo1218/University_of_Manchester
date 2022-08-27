@@ -1,0 +1,214 @@
+---
+title: "Assignment1"
+author: "10878862"
+date: "28/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+<span style = "font-family: Times New Roman; font-size: 1.5em; color: black"> Hi, Dr. Andrew, this is my work of **assignment~1~**, hope you like it~ </span>
+
+# First, I'm going to load all the *packages* might use.
+## In this section, we use five main packages, which are:
+
+1. `tidyverse`: used to tidy and wrangle data.
+
+2. `Hmisc`: used to calculate formulation of the data.
+
+3. `ggridges`: used to show the distributions of the data. 
+
+4. `ggstatsplot`: used to provide some basic statistic information to give us some hints in future discussion and exploration.
+
+5. `ggExtra`: used to draw picture in the margin
+
+<span style = "font-family: Times New Roman; font-size: 1em; color: green"> *Notice: we have hidden the message and the warning of the following chunk to make it more readable and clearer for the audience* </span>
+
+```{r, message = FALSE, warning = FALSE} 
+library(tidyverse) # load the tidyverse package
+library(Hmisc) # load the Hmisc package
+library(ggridges) # load the ggridges package
+library(ggExtra) # load the ggExtra package
+library(ggstatsplot) # load the ggstatsplot package
+```
+# Then, let's read in the data
+
+ `read.csv` is a basic function in R studio to read *.csv* format file. Here, I used it to read our target data of the experimental results and give it the name **experiment_data**, saving it as a variable in the environment. It is easy for us to reload and deal with it.  
+
+```{r}
+experiment_data <- read.csv("assignment_1_data.csv") 
+```
+
+# To exlude extreme value in the data (extreme value might effet our next statistical analysing, and sometimes generated because that the participants are distracted). I use function:
+
+`lapply` to compare the value with mean±3sd, if the absolute value of this data is beyond 3sd,it will be marked as NA and then excluded by functIon by:
+
+`filter`. The data without useful information (e.g., if our subjects have missed some trails or have no data so these subjects should be deleted). `!is.na` means to judge if the value in Condition is **NA**, if it is not NA, it would be chosen, or it would be excluded. In this case, we excluded 1 subject (subject ID = 31).
+
+```{r}
+experiment_data_fil <- experiment_data
+
+experiment_data_fil$Condition1 <- sapply(experiment_data$Condition1, function(x) ifelse(((x-mean(experiment_data$Condition1))/sd(experiment_data$Condition1)) <= 3, x, NA))
+experiment_data_fil$Condition2 <- sapply(experiment_data$Condition2, function(x) ifelse(((x-mean(experiment_data$Condition2))/sd(experiment_data$Condition2)) <= 3, x, NA))
+experiment_data_fil$Condition3 <- sapply(experiment_data$Condition3, function(x) ifelse(((x-mean(experiment_data$Condition3))/sd(experiment_data$Condition3)) <= 3, x, NA))
+experiment_data_fil$Condition4 <- sapply(experiment_data$Condition4, function(x) ifelse(((x-mean(experiment_data$Condition4))/sd(experiment_data$Condition4)) <= 3, x, NA))
+
+experiment_data_fil <- experiment_data_fil %>%
+  filter(!is.na(Condition1) & !is.na(Condition2) & !is.na(Condition3) & !is.na(Condition4))
+```
+
+# We start to wrangle and revise our data to make it more clear and to a more manipulated format.
+
+## In general, we use a wide format, because most statistical analyzing software requires to put the data every raw as a subject. However, in this experiment, we use a long format to make it clearer for the audience to understand the meaning of the data. Also, some software requires us to input long format data. In this part, we use two functions: 
+
+1. `pivot_longer`: to change it from wide format to long format.
+
+<span style = "font-family: Times New Roman; font-size: 1em; color: green"> *Notice: we could also use function `gather` wchich might be used equivalently although might be more complete* </span>
+
+2. `mutate`: mutate could change the variable name of the data, cause *Condition1/2/3/4* is hard for us and the audience to understand, and cost us energy our cognitive resources to recall in the following analyses. So, we change it to a more remembered name, corresponding to our condition - priming type (**Number/Letter**) and following displaying type (**Number/Letter**). Also, to make it clear, we use the abbreviation (**Num/Let**). Also, we could use function `rename(dataname,  Num_Num = Condition1, Num_Let = Condition2, Let_Num = Condition3, Let_Let = Condition4)` to change the variable name.
+
+Besides, the mark `%>%`, called `pipe`. The `pipe` is used to ensure information is passed with code through different lines.
+
+```{r}
+experiment_data_longer <- experiment_data_fil %>%
+  pivot_longer(cols = c(Condition1, Condition2, Condition3, Condition4),
+               names_to = "Condition",
+               values_to = "RT") %>%
+  mutate(Condition = recode(Condition,
+                            "Condition1" = "Num_Num",
+                            "Condition2" = "Num_Let", 
+                            "Condition3" = "Let_Num", 
+                            "Condition4" = "Let_Let"))
+experiment_data_longer <- experiment_data_fil %>%
+  pivot_longer(cols = c(Condition1, Condition2, Condition3, Condition4),
+               names_to = "Condition",
+               values_to = "RT")
+tidied_data <- experiment_data_longer %>%
+  separate(col = "Condition", into = c("Expectation", "Target"),
+           sep = "_") %>%
+
+```
+
+
+# We are going to summarise the data and show the profile of our data to our audience.
+
+1. `group_by` is used to classify the data (in this case, is by **Condition**), then the following results will be given out as different **conditions**.
+
+2. `summarise` is used to calculate and show some basic information of our data, including *mean*, *standard difference*, *median*, *quantile*, and *number*.
+
+3. `knitr::kable` is used to generate a more formal and beautiful table to read for our audience.
+
+```{r}
+table_original <- experiment_data_longer %>%
+  group_by(Condition) %>%
+  summarise(mean_RT = mean(RT), sd_RT = sd(RT), median = median(RT), number = n())
+
+knitr::kable(
+  table_original, 
+  caption = "Profile of reaction time (RT) in different conditions", col.names = c('Condition name', 'Mean RT (ms)', 'SD RT (ms)', 'Median RT (ms)', 'N'), digits = 2, format.args = list(big.mark = ",",
+  scientific = FALSE), align = "lllll")
+```
+
+# In this section, we will visualize our data, which is the most interesting and creative part. 
+# I create several pictures to profile this data following the logic to explore and show it in a real investigating process. 
+## First, I think it is very important to draw all the data and see what it looks like. Considering the within-subject design of this experiment, I add lines between paired points for every subject, to compare the trend in each condition within-subject. 
+
+`ggplot` is a typical function used to draw pictures.
+
+`geom_point` is a supplementary function corresponding for `ggplot` to draw the points of every data.
+
+`geom_line` is a supplementary function corresponding for `ggplot` to draw the lines of paired data.
+
+`theme_minimal`: used to clear the shade in background grid.
+
+`labs`: used to set the properties of the main title, x/y titles.
+
+```{r}
+experiment_data_longer %>%
+  ggplot(aes(x = Condition, y = RT)) + 
+  geom_point(shape = 21,alpha = 0.8, size = 2.5, stroke = 1) +
+  geom_line(aes(group = ID), linetype = 1, na.rm = TRUE, colour = "black", size = 0.5) + 
+  theme_minimal() +
+  labs(x = "Conditions",
+       y = "Reaction Time (ms)")
+```
+
+## Then, it is necessary to see the distribution of the data and the density curve is the intuitive and convenient way for us to know it.
+
+`geom_density_ridges`: used to generate the density(distribution) of the data.
+
+`guides`: used to set the properties of legends. 
+
+`them`: combined with `axis.text.x` to set the properties of text in x axis.
+
+```{r, message = FALSE}
+experiment_data_longer %>%
+  ggplot(aes(x = RT, y = fct_reorder(Condition, .fun = mean, RT))) +
+  geom_density_ridges(height = .5, aes(fill = Condition)) +
+  theme_minimal() +
+  theme(text = element_text(size = 13)) +
+  guides(fill = 'none') + 
+  labs(x = "The Reaction Time (ms)",
+       y = "Density")
+```
+
+## Besides, there is another way to combine the point and the density data (put the density in the marginal area), it could tell the audience more information with less picture. Here, we use:
+
+`ggMarginal` to achieve this goal. Because there is no need to see the distribution of **ID**, so I just draw the distribution of **RT** among **Condition** in margin by code `margins = c("y")`. `type` is used to select the type of picture I would like to draw.
+
+```{r}
+plotdata <- experiment_data_longer %>%
+  ggplot(aes(x = ID, y = RT, colour = Condition)) + 
+  geom_point(shape = 21,size = 2) 
+
+ggMarginal(plotdata, type = "densigram", 
+           margins = c("y"),
+           groupColour = TRUE,
+           groupFill = TRUE
+           )
+```
+
+## Next, I tend to draw data that can give comprehensive details and information for our audience to realize the data.
+
+`geom_violin`: is a supplementary function corresponding for `ggplot` to draw the violin format picture for data.
+
+`geom_jitter`: is a supplementary function corresponding for `ggplot` to draw the jittering point of data to make every point available to be seen.
+
+`geom_boxplot`: is a supplementary function corresponding for `ggplot` to draw the box format picture of data.
+
+Explanation of other functions see the section above.
+```{r}
+experiment_data_longer %>%
+  ggplot(aes(x = Condition, y = RT, colour = Condition)) +
+  geom_violin() +
+  geom_jitter(width = .2, alpha = .45, size = 2) + 
+  geom_boxplot(alpha = .5) + 
+  guides(colour = 'none') + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 0, vjust = 5, hjust = .5)) +
+  labs(title = "Response Time among Different Conditions",
+       x = "Condtion (Expectation_Target)",
+       y = "Response Time (ms)")
+```
+
+### Finally, I tend to use an easily generated way to see the potential statistical value of this data.
+
+`ggbetweenstats`: used to generate combinational plots to show the data with some statistical details.
+
+<span style = "font-family: Times New Roman; font-size: 1em; color: green"> *Notice, I know it is not suitable here to use an independent t-test because of the design of this experiment (I use this just to help me prepare to develop later analyzing strategies). In this case, I believe the repeated-measure ANOVA is the best way to analyze this data with the function of `aov` or `anova`.* </span>
+
+```{r}
+ggbetweenstats(experiment_data_longer, x = Condition, y = RT, plot.type = "box",
+               point.args = list(alpha = 0))
+```
+
+<span style = "font-family: Times New Roman; font-size: 1em; color: green"> *In general, we could also give audience a link to our some materials, including lab website, other supplementary materials, video description or any related information. * </span>
+
+Here, I recommend you to use [Youtube](http://youtube.com), you could find anything you like. (just for fun, haha)
+
+Finally, I would like to finish with a meme to myself.
+
+![(an image caption Source: network)](images/finish.jpg)
+
+<span style = "font-family: monospace; font-size: 2em; color: red"> *Thanks for your patience and effort!* </span>

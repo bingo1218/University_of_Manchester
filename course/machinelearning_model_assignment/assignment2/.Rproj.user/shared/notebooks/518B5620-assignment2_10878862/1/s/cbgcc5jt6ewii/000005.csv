@@ -1,0 +1,23 @@
+"0","MSE <- rep(0,8)
+MSE[1] <- fit.medv.1$results$RMSE
+MSE[2] <- fit.medv.2$results$RMSE
+MSE[3] <- fit.medv.3$results$RMSE
+MSE[4] <- fit.medv.4$results$RMSE
+MSE[5] <- fit.medv.5$results$RMSE
+MSE[6] <- fit.medv.6$results$RMSE
+MSE[7] <- fit.medv.7$results$RMSE
+MSE[8] <- fit.medv.8$results$RMSE
+
+plot(1:8, MSE, type = ""b"", xlab = ""degree"")
+
+which.min(MSE)
+"
+"1","[1]"
+"1"," 4"
+"1","
+"
+"0","MSE[which.min(MSE)]"
+"1","[1]"
+"1"," 0.05756186"
+"1","
+"

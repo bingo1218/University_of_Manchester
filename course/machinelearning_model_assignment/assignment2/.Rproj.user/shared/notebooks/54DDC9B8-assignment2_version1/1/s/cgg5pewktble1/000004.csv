@@ -1,0 +1,1 @@
+"0","plot(effect(""Price"", mod = model, partial.residuals=TRUE), type=""link"")"

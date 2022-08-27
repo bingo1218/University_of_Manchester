@@ -1,0 +1,22 @@
+"0",""
+"0","#check linearity assumption"
+"0","library(GGally)"
+"2","package ‘GGally’ was built under R version 4.1.1"
+"2","Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+"
+"2","
+Attaching package: ‘GGally’
+
+"
+"2","The following object is masked from ‘package:emmeans’:
+
+    pigs
+
+"
+"0","results <- df2 %>%"
+"0","  select(response_time, caffeine, condition) %>%"
+"0","  group_by(condition) %>%"
+"0","  doo(~ggpairs(.) + theme_bw(), result = ""plots"")"
+"0","results"

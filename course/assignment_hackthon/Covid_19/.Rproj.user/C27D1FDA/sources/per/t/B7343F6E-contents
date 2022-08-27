@@ -1,0 +1,510 @@
+---
+title: "Assignment2 - covid-19 and governments' response"
+author: '10878862'
+date: "15/04/2022"
+output:
+  rmdformats::readthedown:
+    self_contained: true
+    thumbnails: true
+    lightbox: true
+    gallery: false
+---
+
+<span style = "font-family: Times New Roman; font-size: 1.5em; color: black"> Hi, Dr. Andrew, this is my work of **assignment 2**, hope you like it~ </span>
+
+## Prepare for R markdown
+
+Here, let's turn off the warning and message for later chunks because during the later plotting process, there are lots of warning messages, so to make it clear and readable, I set them both as false to ignore this information. It is worth noticing that I have handled all the warnings to make sure all the processing is appropriate, and I would only mention then warning information when necessary. 
+
+Also, I use the `rmdformats`  package so that it can organize this whole document better.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+## Introduction
+
+After the COVID-19 outbreak, different countries worldwide pay various degrees of effort against this disease. However, almost all governments remain being blamed by their civilians no matter what measures they take. Until now, mainstream countries around the world started to decrease their attention on COVID-19 and it seems like this disaster is passing by. It seems like all the efforts paid by these governments are of no use, failing to stop the step of COVID in the long run. Is it true? Here, in this post-COVID time point, I hope to investigate the relationship between the governments' response (Public Heat and Economic Measures) to COVID-19 and the influence caused by it (Case rate and Death rate) in each country, trying to identify the role of different strategies in coping with COVID. 
+These results can help the government to determine the most efficient method used to hinder the epidemic of communicable diseases in the future.
+
+First I load, wrangle and visualize data. At last, I conduct various statistical analyses and build a model to reveal the relationship between the responding patterns of governments and the severity of COVID (reported cases and death rate) in each country. 
+
+Meanwhile, people always think development countries with high GDP can handle this kind of worldwide pandemic better, so we introduce the GPD per capita (PPP) into our presentation and analysis, comparing the response between countries with high PPP and low PPP and the influence on the COVID-19 related deaths.
+
+To be more specific, first, we use the median *GDP per capital (ppp)*/ *Rigidity Public Health* / *Economic Measurement* to divide the countries into high/low ppp/(public health/economic) response level subgroups of countries. Like the original paper used, we use the index of public health responses to COVID-19 as of 2 time-points: **April 15, 2020**, and **September 15, 2020**, The reported *cases per million people* as the main outcome, to evaluate the relationship between the government response and COVID-19 in the different developing level of countries.
+
+
+## Load packages
+
+First, I'm going to load all the packages that should be used in the three questions, having already used the `install.packages` function directly in the console, e.g., `install.packages("tidyverse")`.
+
+Now we need to add these packages into our environment with function `library()`(e.g., `library(tidyverse)`). The main packages include:
+
+- `tidyverse`: a collection of R packages using widely in data science. In the dataset, we specifically use ggplot2, dplyr and purrr.
+  - `ggplot`: used to visualised the data
+  - `dplyr`: includes `select`, `mutate`, `filter`, `summarise` and `arrange`. 
+
+- `gganimate`: extends the grammar of graphics as implemented by ggplot2 to include the description of animation, drawing dynamic picture.
+-`rworldmap`: a package for visualising global data, concentrating on data refer-enced by country codes or gridded at half degree resolution.
+- `plotly`: an R package for creating interactive web-based graphs
+- `ggpubr`: `ggarrange` in it can be used to arrange multiple ggplots on the same page. 
+- `cowplot`: a simple add-on to ggplot. 
+- `rmdformats`: The rmdformats package provides several HTML output formats of unique and attractive styles
+
+```{r}
+library(tidyverse)
+library(gganimate)
+library(rworldmap)
+library(plotly)
+library(ggpubr)
+library(cowplot)
+library(rmdformats)
+```
+
+## Read in Data and Data Wrangaling
+
+Now, we will read in the experimental data that we are going to analyses as a variable in our environment. 
+
+For this assignment, I downloaded two open-source datasets, including "GOVERNMENTS' RESPONSES TO COVID-19 (response2covid19) - DATASET" and "Data on COVID-19 (coronavirus) by Our World in Data". Both of the related reports and descriptions are firstly published in the journal *Scientific Data* and the database is from [GOVERNMENTS' RESPONSES TO COVID-19](https://github.com/simonporcher/COVID-19-Governments-Responses) and [Data on COVID-19](https://github.com/owid/covid-19-data/tree/master/public/data). 
+
+Here, first, I combine these two datasets and then visualize the data using various methods, presenting some comprehensive information to the reader. 
+
+```{r}
+covid_data <- read_csv("owid_covid_data.csv") %>%
+  select(iso_code, date, population, population_density, gdp_per_capita,
+         total_cases_per_million, new_cases, 
+         total_deaths_per_million, new_deaths) %>%
+  rename(id = iso_code) %>%
+  mutate(t_date = as.Date(date))
+
+Government_response_all <- read_csv("Gov_Responses2Covid19_2021.csv")
+
+Government_response <- Government_response_all %>%
+  rename(region = country, t_date = d) %>%
+  select(region, t_date, id, Rigidity_Public_Health, Economic_Measures)
+
+my_data_all <- Government_response %>%
+  left_join(covid_data, by = c('id','t_date')) %>%
+  filter(!is.na(population))
+  
+
+my_data_all <- left_join(Government_response, covid_data, by = c('id','t_date'))
+```
+
+## Data Visualisation
+
+### Prepare for data visulisation - data wrangling 2
+
+Here we wrangle our data to make it suitable to draw animated plots.
+- `rworldmap`: a package for visualising global data.
+  - `joinCountryData2Map`: Joins user data referenced by country codes or names to an internal map, ready for plotting.
+  - `fortify`: Convert a curves and points object to a data frame for ggplot2.
+  - `merge`: Merge two data frames by common columns or row names.
+
+- `arrange`: Arrange rows by column values.
+- `distinct()`: Retain only unique/distinct rows from an input variable.
+- `left_join()`: These are generic functions that dispatch to individual variable.
+- `as.Date`: convert between character representations and objects of class *"Date"*.
+
+```{r}
+my_data_gif <- my_data_all %>% 
+  rename(iso3c = id)
+
+map_gif <- joinCountryData2Map(my_data_gif, joinCode = "ISO3", nameJoinColumn = "iso3c")
+
+map_gif_poly <- fortify(map_gif) #extract polygons 
+
+map_gif_poly <- merge(map_gif_poly, map_gif@data, by.x="id", by.y="ADMIN", all.x=T)
+
+map_poly_all <- map_gif_poly %>% 
+  arrange(id, order) %>%
+  select(REGION, ISO3.1) %>%
+  rename(id = ISO3.1, continent = REGION) %>%
+  distinct()
+
+my_data_gif_all <- left_join(my_data_all, map_poly_all, by = 'id') %>%
+  filter(!is.na(continent) & t_date <= as.Date("2021-05-15"))
+```
+
+### Animated plots
+
+These plots present the dynamic change of everyday reported time cases and the measurement the government took at that time. This type of plot uses our data as much as possible and is also interesting to show our data to the reader.
+
+```{r}
+p_cases_PublicHealth <- my_data_gif_all%>%
+  ggplot(aes(x = total_cases_per_million, y = Rigidity_Public_Health, 
+             size = population, colour = region)) +
+  geom_point(show.legend = FALSE, alpha = 0.7) + 
+  facet_wrap(~continent) +
+  scale_color_viridis_d() +
+  scale_size(range = c(2, 12)) +
+  labs(x = "total cases (per million)", y = "Public Health Response") +
+  transition_time(t_date) +
+  labs(title = "date: {frame_time}") + 
+  shadow_wake(wake_length = 0.1, alpha = FALSE)
+
+p_cases_Econ <- my_data_gif_all%>%
+  ggplot(aes(x = total_cases_per_million, y = Economic_Measures,  
+             size = population_density, colour = region)) +
+  geom_point(show.legend = FALSE, alpha = 0.7) + 
+  facet_wrap(~continent) +
+  scale_color_viridis_d() +
+  scale_size(range = c(2, 12)) +
+  labs(x = "total cases (per million)", y = "Economic Response") +
+  transition_time(t_date) +
+  labs(title = "date: {frame_time}") +
+  shadow_wake(wake_length = 0.1, alpha = FALSE)
+
+p_cases_PublicHealth
+p_cases_Econ
+```
+
+<span style = "font-family: Times New Roman; font-size: 1em; color: green"> *For these two plots, if they are still but not animated, please click the button on the up left to download the Original submitted file to see what's happening here. Sorry for this, but I found that it's impossible for the turnitinuk system to present it appropriately. * </span>
+
+According to these two plots, we could have intuitive feelings about the relationship between the percentage of COVID-19 cases and the government's response (efforts on public health and economic aid). 
+
+We could clearly see that in the early stage of the pandemic, different governments presented various unstable patterns corresponding to the COVID-19 (generally speaking, it's increased). However, we cannot identify a dynamic change between the increased velocity/numbers of COVID. Especially after September 2020, most governments' responding patterns remain steady as the reported cases boomed. Also, we can see most of the governments pay attention to public health, while some regions/countries never took the economic measurements.
+
+
+### Evolution of the global index of the rigidity of public health responses and the global index of economic responses. 
+
+- `ggplot2`: ggplot2 is an open-source data visualization package for R.
+  - `scale_x_date`: to override original scale manually
+- `ifelse`: with `ifelse(test_expression, x, y)`, we could easy assign overvations to subgroups.
+
+- `ggplotly`: is used to make ggplot2 plots interactive, publication-quality graphs online
+  - `subplot`: put several interactive plots together under `ggplotly` function.
+  - `layout`: used to set commone title and other parameters for the combied plot.
+
+```{r}
+my_data_mean <- my_data_all %>%
+  filter(!is.na(gdp_per_capita)) %>%
+  mutate(total_cases_per_million = 
+           ifelse(is.na(total_cases_per_million),
+                  0,
+                  total_cases_per_million))%>%
+  mutate(ppp = 
+           factor(ifelse(gdp_per_capita < median(gdp_per_capita, 
+                                          na.rm = TRUE),"low","high"))) %>%
+  group_by(t_date, ppp) %>%
+  summarise(PH_mean = mean(Rigidity_Public_Health), 
+            EM_mean = mean(Economic_Measures),
+            case_mean = mean(total_cases_per_million))
+
+ph_plot <- my_data_mean %>%  
+  ggplot() +
+  geom_smooth(aes(x = t_date, y = PH_mean, color = ppp),
+              method = 'loess',
+              se = FALSE) +
+  scale_x_date(date_breaks = "4 months" , date_labels = "%y-%m") +
+  theme_classic() +
+  theme(legend.position="none")
+
+em_plot <- my_data_mean %>%  
+  ggplot() +
+  geom_smooth(aes(x = t_date, y = EM_mean, color = ppp),
+              method = 'loess',
+              se = FALSE) +
+  scale_x_date(date_breaks = "4 months" , date_labels = "%y-%m") +
+  theme_classic()+
+  theme(legend.position="none")
+
+case_plot <- my_data_mean %>%  
+  ggplot() +
+  geom_smooth(aes(x = t_date, y = case_mean, color = ppp),
+              method = 'loess',
+              se = FALSE) +
+  scale_x_date(date_breaks = "4 months" , date_labels = "%y-%m") +
+  theme_classic()
+
+ph_plot <- ggplotly(ph_plot)
+
+em_plot <- ggplotly(em_plot)
+
+case_plot <- ggplotly(case_plot)
+
+
+subplot(ph_plot, em_plot, case_plot, nrows = 3, margin = 0.04)%>%
+  layout(title= list(text = "The development of government' response and COVID cases with time passing by", font = list(
+  family = "Aria",
+  color = "Black",
+  size = 15))) 
+```
+
+We could see that due to the population density and other geographic difference, the cases per million is quite different between countries with high GDP per capital and low GDP per capital.
+
+### Maps
+
+Load map from `rworladmap`, which is better than using `map_data("world")` directly, with more geographical and associated information.
+
+```{r}
+my_data_stat <- my_data_all %>%
+  mutate(t_date = factor(t_date)) %>%
+  filter(t_date == '2020-04-15' | 
+         t_date == '2020-09-15' ) %>%
+  mutate(t_date = recode(t_date,'2020-04-15' = "d1",
+                    '2020-09-15' = 'd2')) %>%
+  rename(iso3c = id)
+
+map_d1 <- joinCountryData2Map(filter(my_data_stat, t_date == 'd1'), joinCode = "ISO3", nameJoinColumn = "iso3c")
+map_d2 <- joinCountryData2Map(filter(my_data_stat, t_date == 'd2'), joinCode = "ISO3", nameJoinColumn = "iso3c")
+map_d3 <- joinCountryData2Map(filter(my_data_stat, t_date == 'd3'), joinCode = "ISO3", nameJoinColumn = "iso3c")
+
+map_d1_poly <- fortify(map_d1) #extract polygons 
+map_d2_poly <- fortify(map_d2) #extract polygons 
+map_d3_poly <- fortify(map_d3) #extract polygons 
+map_d1_poly <- merge(map_d1_poly, map_d1@data, by.x="id", by.y="ADMIN", all.x=T)
+map_d2_poly <- merge(map_d2_poly, map_d2@data, by.x="id", by.y="ADMIN", all.x=T)
+map_d3_poly <- merge(map_d3_poly, map_d3@data, by.x="id", by.y="ADMIN", all.x=T)
+map_d1_poly <- map_d1_poly %>% arrange(id, order)
+map_d2_poly <- map_d2_poly %>% arrange(id, order)
+map_d3_poly <- map_d3_poly %>% arrange(id, order)
+```
+
+#### Governments' Reponse map
+
+##### Reponse towards COVID-19 at April/September 15, 2020.
+
+- `geom_polygon`: geom that draws a polygon. With latitude and longitude information, we could draw maps.
+- `scale_fill_gradient`: it creates a two color gradient.
+- `theme_map`: A clean theme that is good for displaying maps from geom_map.
+- `coord_cartesian(ylim = c(-50, 90))`: this line is limited the ylim range so that we could use it to drop Antarctic.
+
+```{r}
+# Public Health
+## Plot public health at April 15, 2020
+PH_p1_map <- ggplot(map_d1_poly, aes(x = long, y = lat, group=group)) + 
+  geom_polygon(aes(fill = Rigidity_Public_Health), color = "black") +
+  scale_fill_gradient(name = "Public Health Response", 
+                      low = "white", 
+                      high = "#FBE122", 
+                      na.value = "grey50") +
+  theme_map() +
+  coord_cartesian(ylim = c(-50, 90)) + 
+  theme(legend.key.size = unit(0.5, 'cm'), #change legend key size
+        legend.key.height = unit(0.5, 'cm'), #change legend key height
+        legend.key.width = unit(0.5, 'cm'), #change legend key width
+        legend.title = element_text(size=8), #change legend title font size
+        legend.text = element_text(size=8)) #change legend text font size
+
+## Plot public health at September 15, 2020
+
+EM_p1_map <- ggplot(map_d2_poly, aes(x = long, y = lat, group=group)) + 
+  geom_polygon(aes(fill = Economic_Measures), color = "black") +
+  theme_map() +
+  coord_cartesian(ylim = c(-50, 90)) +
+  scale_fill_gradient(name = "Economic Response", 
+                      low = "white", 
+                      high = "#660099", 
+                      na.value = "grey50") +
+    theme(legend.key.size = unit(0.5, 'cm'),
+        legend.key.height = unit(0.5, 'cm'), 
+        legend.key.width = unit(0.5, 'cm'), 
+        legend.title = element_text(size=8), 
+        legend.text = element_text(size=8)) 
+
+map_date1 <- ggarrange(PH_p1_map, EM_p1_map,
+                    labels = c("A", "B"),
+                    ncol = 1, nrow = 2) 
+
+# Economic Measurement
+map_date1_2 <- annotate_figure(map_date1, top = text_grob("Goverment Resposne Map in April 15, 2020", 
+               color = "black", face = "bold", size = 14))
+
+ggdraw() +
+  draw_plot(map_date1_2)+
+  draw_image('UoM_log.png', x = -0.35, y = -0.35, scale = 0.2)+
+  draw_label("from: University of Manchester", colour = "#80404080", size = 10)
+
+## Plot Economic Response at April 15, 2020
+PH_p2_map <- ggplot(map_d2_poly, aes(x = long, y = lat, group=group)) + 
+  geom_polygon(aes(fill = Economic_Measures), color = "black") +
+  scale_fill_gradient(name = "Public Health Response", 
+                      low = "white", 
+                      high = "#FBE122", 
+                      na.value = "grey50") +
+  theme_map() +
+  coord_cartesian(ylim = c(-50, 90)) + 
+  theme(legend.key.size = unit(0.5, 'cm'),
+        legend.key.height = unit(0.5, 'cm'), 
+        legend.key.width = unit(0.5, 'cm'), 
+        legend.title = element_text(size=8), 
+        legend.text = element_text(size=8)) 
+
+## Plot Economic Response at September, 15, 2020
+EM_p2_map <- ggplot(map_d2_poly, aes(x = long, y = lat, group=group)) + 
+  geom_polygon(aes(fill = Rigidity_Public_Health), color = "black") +
+  theme_map() +
+  coord_cartesian(ylim = c(-50, 90)) +
+  scale_fill_gradient(name = "Economic Response", 
+                      low = "white", 
+                      high = "#660099", 
+                      na.value = "grey50") +
+    theme(legend.key.size = unit(0.5, 'cm'),
+        legend.key.height = unit(0.5, 'cm'), 
+        legend.key.width = unit(0.5, 'cm'), 
+        legend.title = element_text(size=8), 
+        legend.text = element_text(size=8))
+
+map_date2 <- ggarrange(PH_p2_map, EM_p2_map,
+                    labels = c("A", "B"),
+                    ncol = 1, nrow = 2)
+```
+
+#### Put plots together
+
+- `ggarrange`: put multiple ggplots on the same page.
+- `annotate_figure`: used to add title or legend for arranged plots.
+
+- `ggdraw()`: a function in *cowplot*, could be used to set up a drawing layer on top of a ggplot.
+  - With `draw_plot()` + `draw_image()`, can put a image and plot together.
+  - `draw_label()`: we could add watermark to this combied plot. 
+  
+  Here, I added the University crest and a line saying "*from the University of Manchester*". It gives us more freedom to aesthetic your plots.
+
+```{r}
+map_date2_2 <- annotate_figure(map_date2, top = text_grob("Goverment Resposne Map in September 15, 2020", 
+               color = "black", face = "bold", size = 14))
+
+ggdraw() +
+  draw_plot(map_date2_2)+
+  draw_image('UoM_log.png', x = -0.35, y = -0.35, scale = 0.2)+
+  draw_label("from: University of Manchester", colour = "#80404080", size = 10)
+```
+
+With the above maps and dynamic plots, it seems like at the start of the COVID-19, most countries focus more on public health rather than economic measurement. However, governments' policies became liberal but stable in the later time.
+
+Next, we are going to use statistical analysis to measure the true relationship between the type of the measurement and the time point of the corresponding measurement taken, and their interaction of them with the development of the pandemic.
+
+## Subgroup Analysis
+
+After all the intuitive descriptions above, now let's go to the quantitative analysis part, where we could define subgroups and then conduct a linear mixed model.
+
+### Subgroup visualisation
+
+#### Data wrangling 2 for folloing analyses
+
+```{r}
+my_data_stat_d1 <- my_data_stat %>%
+  filter(!is.na(gdp_per_capita)) %>%
+  filter(t_date == 'd1')%>%
+  mutate(PH_group = 
+           ifelse(Rigidity_Public_Health < 
+                    median(Rigidity_Public_Health, na.rm = TRUE),"low_PH","high_PH"),
+         EM_group = 
+           ifelse(Economic_Measures < 
+                    median(Economic_Measures, na.rm = TRUE),"low_Econ","high_Econ"),
+         ppp = 
+           ifelse(gdp_per_capita < 
+                    median(gdp_per_capita,na.rm = TRUE),"low","high")) %>%
+  mutate(PH_group = factor(PH_group),
+         EM_group = factor(EM_group),
+         ppp = factor(ppp))
+
+my_data_stat_d2 <- my_data_stat %>%
+  filter(!is.na(gdp_per_capita)) %>%
+  filter(t_date == 'd2')%>%
+  mutate(PH_group = 
+           ifelse(Rigidity_Public_Health < 
+                    median(Rigidity_Public_Health, na.rm = TRUE),"low_PH","high_PH"),
+         EM_group = 
+           ifelse(Economic_Measures < 
+                    median(Economic_Measures, na.rm = TRUE),"low_Econ","high_Econ"),
+         ppp = 
+           ifelse(gdp_per_capita < 
+                    median(gdp_per_capita,na.rm = TRUE),"low","high")) %>%
+  mutate(PH_group = factor(PH_group),
+         EM_group = factor(EM_group),
+         ppp = factor(ppp))
+```
+
+- `geom_jitter`: adding a small amount of random variation to the location of each point 
+
+- `geom_boxplot`: the boxplot compactly displays the distribution of a continuous variable 
+
+- `set.seed(123)`: to make sure the plot we draw every time is the same (especially for the gemo_jitter)
+
+#### Data Visualisation before Plot
+
+```{r}
+set.seed(123)
+
+my_data_stat_d1 %>%
+  filter(total_cases_per_million < 6000) %>%
+  ggplot(aes(x = PH_group:EM_group, 
+             y = total_cases_per_million, 
+             colour = PH_group:EM_group)) +
+  geom_jitter(shape = 21,
+              width = .2, 
+              alpha = 2, 
+              size = 2) +
+  geom_boxplot(alpha = .5)  +
+  facet_wrap(~ppp, scales = "free_y") + 
+  guides(color = 'none')+
+  labs(title = "Response Time in Different Conditions at April 15, 2020",
+       x = "Public Health x Economic Measurement Response score",
+       y = "Total Deaths (per million)") + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 20, vjust = .5, hjust = .5))
+
+my_data_stat_d2 %>%
+  filter(total_cases_per_million < 2000) %>%
+  ggplot(aes(x = PH_group:EM_group, 
+             y = total_deaths_per_million, 
+             colour = PH_group:EM_group)) +
+  geom_jitter(shape = 21,
+              width = .2, 
+              alpha = 2, 
+              size = 2) +
+  geom_boxplot(alpha = .5)  +
+  facet_wrap(~ppp, scales = "free_y") + 
+  guides(color = 'none')+
+  labs(title = "Response Time in Different Conditions at September 15, 2020",
+       x = "Public Health x Economic Measurement Response score",
+       y = "Total Deaths (per million)") + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 20, vjust = .5, hjust = .5))
+
+```
+
+#### Model Construct - linear model
+
+```{r}
+
+lmm_high_d1 <- lm(total_cases_per_million ~ PH_group * EM_group,
+                        data = filter(my_data_stat_d1, ppp == "high"))
+
+lmm_low_d1 <- lm(total_cases_per_million ~ PH_group * EM_group,
+                        data = filter(my_data_stat_d1, ppp == "low"))
+
+lmm_high_d2 <- lm(total_cases_per_million ~ PH_group * EM_group,
+                        data = filter(my_data_stat_d2, ppp == "high"))
+
+lmm_low_d2 <- lm(total_cases_per_million ~ PH_group * EM_group,
+                        data = filter(my_data_stat_d2, ppp == "low"))
+summary(lmm_high_d1)
+summary(lmm_high_d2)
+summary(lmm_low_d1)
+summary(lmm_low_d2)
+```
+
+The above results suggested only in time point 1 for high ppp countries, there might be the main effect of Economic measures, which suggested that economic responses are positively related to the more serious situation of COVID-19.
+
+### Conclusion
+
+Above all, we could not see a significant interaction effect here, which means no matter at the starting point or the later time point, there is no stable relationship between the governments' response and COVID death or reported cases, we cannot determine a *better* method can be generated to every country. Although we have detected the main effect for economic responses in point 1 for high ppp countries, we cannot know the cause and effect. It might be because high reported cases contributed to higher economic support or vice versa. Nevertheless, at least it suggested some flexibility in governments' response.
+
+
+### Limitation
+
+However, by using two single days, we drop too much important information, especially for the *time* dimension, which is of vital importance when exploring the effect of the policies and the development of the infectious disease! Meanwhile, there are too many extraneous variables that cannot be controlled, especially based on the existing databases such as the one we are using.
+
+In the future study, we should use some new statistical methods, such as multivariate time series analysis to explore their relationship when considering the time dimension. Also, pre-registered research should be used in case of the effect of a type I error.
+
+## Reference
+
+Porcher, S. (2020). Response2covid19, a dataset of governments’ responses to COVID-19 all around the world. Scientific data, 7(1), 1-9.
+
+Hasell, J., Mathieu, E., Beltekian, D., Macdonald, B., Giattino, C., Ortiz-Ospina, E., ... & Ritchie, H. (2020). A cross-country database of COVID-19 testing. Scientific data, 7(1), 1-7.
+
+<span style = "font-family: Times New Roman; font-size: 2em; color: Grey80"> *Thanks for your patience and effort!* </span>

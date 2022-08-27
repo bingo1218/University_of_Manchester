@@ -1,0 +1,7 @@
+"0","lm.lstat2 = lm(nox ~ poly(age,3) + ns(dis,4) + poly(lstat,2) + medv,"
+"0","                 data = RegressionData)"
+"0","lm.bs.lstat8 = lm(nox ~ poly(age,3) + ns(dis,4) + bs(lstat,8) + medv,"
+"0","                 data = RegressionData)"
+"0","lm.ns.lstat10 = lm(nox ~ poly(age,3) + ns(dis,4) + ns(lstat,10) + medv,"
+"0","                 data = RegressionData)"
+"0","plot(effect(""dis"", mod = lm.lstat2, partial.residuals = TRUE))"

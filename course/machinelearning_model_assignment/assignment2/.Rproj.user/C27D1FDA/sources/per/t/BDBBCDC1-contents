@@ -1,0 +1,127 @@
+---
+title: "Model selection"
+author: "zhb"
+date: "25/04/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ISLR2)
+
+```
+
+```{r}
+str(Hitters)
+```
+```{r}
+sum(is.na(Hitters$Salary))
+```
+Because there are missing data, we use na.omit to drop these observations.
+```{r}
+Hitters <- na.omit(Hitters)
+dim(Hitters)
+sum(is.na(Hitters$Salary))
+```
+
+Use `regsubsets()` function 
+```{r}
+library(leaps)
+regfit.full <- regsubsets(Salary ~ ., Hitters)
+summary(regfit.full)
+regfit.full2 <- regsubsets(Salary ~ ., Hitters, nvmax = 19)
+reg.summary = summary(regfit.full2)
+names(reg.summary)
+reg.summary$rsq
+```
+# plot different model fitting parameter to show the model performance
+
+```{r}
+par(mfrow = c(1,2))
+plot(reg.summary$rss, xlab = "Number of Variables",
+     ylab = "RSS", type = "l")
+plot(reg.summary$adjr2, xlab = "Number of Variables",
+     ylab = "Adjusted RSq", type = "l")
+
+```
+Find the largest one and add a red point on it to clearly present out.
+```{r}
+which.max(reg.summary$adjr2)
+plot(reg.summary$adjr2, xlab = "Number of Variables",
+     ylab = "Adjusted RSq", type = "l")
+points(11, reg.summary$adjr2[11], col = "red", cex = 2, pch = 20)
+```
+Plot Cp and BIS statistics, and indicate the models with the smallest statistic using which.min()
+```{r}
+plot(reg.summary$cp, xlab = "Number of Variables",
+     ylab = "Cp", type = "l")
+minpoint = which.min(reg.summary$cp)
+points(minpoint, reg.summary$cp[minpoint], col = "red", cex = 2, pch = 20)
+```
+
+```{r}
+plot(regfit.full2, scale = "r2")
+```
+
+```{r}
+plot(regfit.full2, scale = "Cp")
+```
+
+```{r}
+plot(regfit.full2, scale = "bic")
+```
+
+```{r}
+coef(regfit.full2, 6)
+```
+
+
+```{r}
+regfit.fwd <- regsubsets(Salary ~., data = Hitters,
+                         nvmax = 19, method = "forward")
+summary(regfit.fwd)
+
+```
+
+```{r}
+regfit.bwd <- regsubsets(Salary ~ ., data = Hitters,
+    nvmax = 19, method = "backward")
+summary(regfit.bwd)
+```
+
+# Choosing among models
+```{r}
+set.seed(1)
+train <- sample(c(TRUE, FALSE), nrow(Hitters),
+    replace = TRUE)
+test <- (!train)
+
+```
+
+```{r}
+regfit.best <- regsubsets(Salary ~ .,
+                          data = Hitters[train, ], nvmax = 19)
+
+```
+
+# Make a matrix from the test dataset
+```{r}
+test.mat <- model.matrix(Salary ~ ., data = Hitters[test, ])
+```
+
+
+```{r}
+val.errors <- rep(NA, 19)
+for (i in 1:19) {
+ coefi <- coef(regfit.best, id = i)
+ pred <- test.mat[, names(coefi)] %*% coefi
+ val.errors[i] <- mean((Hitters$Salary[test] - pred)^2)
+}
+val.errors
+which.min(val.errors)
+coef(regfit.best, 7)
+```
+

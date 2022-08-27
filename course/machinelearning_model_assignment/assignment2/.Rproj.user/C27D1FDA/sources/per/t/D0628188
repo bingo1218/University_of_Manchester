@@ -1,0 +1,28 @@
+{
+    "id": "D0628188",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1651240419992.0,
+    "source_on_save": false,
+    "relative_order": 7,
+    "properties": {
+        "id": "97b15f962f8a44b6ba9251b6b5ed4aa5",
+        "name": "model",
+        "title": "model",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 6877125773773464354,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1651240419992,
+    "read_only": false,
+    "read_only_alternatives": []
+}

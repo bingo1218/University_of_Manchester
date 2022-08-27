@@ -1,0 +1,48 @@
+library(tidyverse)
+library(Hmisc)
+library(tidyverse) # load the tidyverse package
+library(Hmisc) # load the Hmisc package
+library(ggridges) # load the ggridges package
+library(ggExtra) # load the ggExtra package
+library(ggstatsplot) # load the ggstatsplot package
+
+experiment_data <- read.csv("assignment_1_data.csv") 
+
+experiment_data_longer <- experiment_data %>%
+  pivot_longer(cols = c(Condition1, Condition2, Condition3, Condition4),
+               names_to = "Condition",
+               values_to = "RT") %>%
+  mutate(Condition = recode(Condition,
+                            "Condition1" = "Num_Num",
+                            "Condition2" = "Num_Let", 
+                            "Condition3" = "Let_Num", 
+                            "Condition4" = "Let_Let"))
+
+tidied_data <- experiment_data_longer %>%
+  separate(col = "Condition", into = c("Expectation", "Target"),
+           sep = "_") %>%
+    mutate(Expectation = factor(Expectation), Target = factor(Target))
+
+assignment_1_longer <- tidied_data
+p1 <- ggplot(assignment_1_longer)+ #to decide the database
+  geom_boxplot(aes(x = Expectation,
+                   y = RT))#to add the aesthetic and geom layers
+#To generate plot1 which demonstrate the main effect of expectation
+
+p2 <- ggplot(assignment_1_longer)+#to decide the database
+  geom_boxplot(aes(x = Target,
+                   y = RT))#to add the aesthetic and goem layers
+#to generate plot2 which demonstrate the main effect of target
+
+p3 <- ggplot(assignment_1_longer)+#to decide the database
+  aes(x = Expectation,
+      y = RT,
+      group = Target,
+      colour = Target)+#to add the aesthetic layer
+  stat_summary(fun = mean, geom = "point")+
+  stat_summary(fun = mean, geom = "line")
+#stat adding new statistics to the gragh, and geom deciding the ways to show these statistics
+#to generate a line chart illustrating the interaction of the two IVs
+
+(p1|p2)/p3
+#output

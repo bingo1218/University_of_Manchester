@@ -1,0 +1,619 @@
+---
+API: 2.1
+OpenSesame: 3.3.11
+Platform: nt
+---
+set width 1024
+set uniform_coordinates yes
+set title "New experiment"
+set subject_parity even
+set subject_nr 0
+set start experiment
+set sound_sample_size -16
+set sound_freq 48000
+set sound_channels 2
+set sound_buf_size 1024
+set sampler_backend psycho
+set round_decimals 2
+set psychopy_waitblanking yes
+set mouse_backend psycho
+set keyboard_backend psycho
+set height 768
+set fullscreen no
+set form_clicks no
+set foreground "#000000"
+set font_underline no
+set font_size 18
+set font_italic no
+set font_family mono
+set font_bold no
+set experiment_path "D:\\UoM\\course\\semester2\\experimental_psychology\\assignment1"
+set disable_garbage_collection yes
+set description "The main experiment item"
+set coordinates uniform
+set compensation 0
+set color_backend psycho
+set clock_backend psycho
+set canvas_backend psycho
+set background "#ffffff"
+
+define sketchpad Inst1
+	set duration keypress
+	set description "Displays stimuli"
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if=always text="Choose which name is young/old." x=0 y=0 z_index=0
+
+define sketchpad Inst2
+	set duration keypress
+	set description "Displays stimuli"
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if=always text="Choose which name is self/others" x=0 y=0 z_index=0
+
+define sketchpad Inst3
+	set duration keypress
+	set description "Displays stimuli"
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if=always text="If a name (black), choose which one is young/old;<br />If pronone (blue), choose which one is self/others." x=0 y=0 z_index=0
+
+define sketchpad Inst4
+	set duration keypress
+	set description "Displays stimuli"
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if=always text="Choose which name is self/others" x=0 y=0 z_index=0
+
+define sketchpad Inst5
+	set duration keypress
+	set description "Displays stimuli"
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if=always text="If a name (black), choose which one is young/old;<br />If pronone (blue), choose which one is self/others." x=0 y=0 z_index=0
+
+define loop block1_loop
+	set source table
+	set repeat 3
+	set order random
+	set description "Repeatedly runs another item"
+	set cycles 12
+	set continuous no
+	set break_if_on_first yes
+	set break_if never
+	setcycle 0 name_sti Cecil
+	setcycle 0 name_cate Old
+	setcycle 0 name_corr_resp j
+	setcycle 1 name_sti Edgar
+	setcycle 1 name_cate Old
+	setcycle 1 name_corr_resp j
+	setcycle 2 name_sti Wilber
+	setcycle 2 name_cate Old
+	setcycle 2 name_corr_resp j
+	setcycle 3 name_sti Mortimer
+	setcycle 3 name_cate Old
+	setcycle 3 name_corr_resp j
+	setcycle 4 name_sti Donald
+	setcycle 4 name_cate Old
+	setcycle 4 name_corr_resp j
+	setcycle 5 name_sti Walter
+	setcycle 5 name_cate Old
+	setcycle 5 name_corr_resp j
+	setcycle 6 name_sti Brad
+	setcycle 6 name_cate Young
+	setcycle 6 name_corr_resp f
+	setcycle 7 name_sti Erik
+	setcycle 7 name_cate Young
+	setcycle 7 name_corr_resp f
+	setcycle 8 name_sti Joey
+	setcycle 8 name_cate Young
+	setcycle 8 name_corr_resp f
+	setcycle 9 name_sti Billy
+	setcycle 9 name_cate Young
+	setcycle 9 name_corr_resp f
+	setcycle 10 name_sti Chad
+	setcycle 10 name_cate Young
+	setcycle 10 name_corr_resp f
+	setcycle 11 name_sti Mike
+	setcycle 11 name_cate Young
+	setcycle 11 name_corr_resp f
+	run block1_seq
+
+define sequence block1_seq
+	set flush_keyboard yes
+	set description "Runs a number of items in sequence"
+	run name_skt always
+	run name_resp always
+	run name_fdb always
+	run logger always
+
+define loop block2_loop
+	set source table
+	set repeat 3
+	set order random
+	set description "Repeatedly runs another item"
+	set cycles 12
+	set continuous no
+	set break_if_on_first yes
+	set break_if never
+	setcycle 0 prn_sti They
+	setcycle 0 prn_cate Other
+	setcycle 0 prn_corr_resp j
+	setcycle 1 prn_sti Them
+	setcycle 1 prn_cate Other
+	setcycle 1 prn_corr_resp j
+	setcycle 2 prn_sti Theirs
+	setcycle 2 prn_cate Other
+	setcycle 2 prn_corr_resp j
+	setcycle 3 prn_sti Their
+	setcycle 3 prn_cate Other
+	setcycle 3 prn_corr_resp j
+	setcycle 4 prn_sti Themselves
+	setcycle 4 prn_cate Other
+	setcycle 4 prn_corr_resp j
+	setcycle 5 prn_sti Those
+	setcycle 5 prn_cate Other
+	setcycle 5 prn_corr_resp j
+	setcycle 6 prn_sti I
+	setcycle 6 prn_cate self
+	setcycle 6 prn_corr_resp f
+	setcycle 7 prn_sti Me
+	setcycle 7 prn_cate self
+	setcycle 7 prn_corr_resp f
+	setcycle 8 prn_sti Mine
+	setcycle 8 prn_cate self
+	setcycle 8 prn_corr_resp f
+	setcycle 9 prn_sti Myself
+	setcycle 9 prn_cate self
+	setcycle 9 prn_corr_resp f
+	setcycle 10 prn_sti My
+	setcycle 10 prn_cate self
+	setcycle 10 prn_corr_resp f
+	setcycle 11 prn_sti Oneself
+	setcycle 11 prn_cate self
+	setcycle 11 prn_corr_resp f
+	run block2_seq
+
+define sequence block2_seq
+	set flush_keyboard yes
+	set description "Runs a number of items in sequence"
+	run prn_skt always
+	run prn_resp always
+	run prn_fdb always
+	run logger always
+
+define loop block3_loop
+	set source table
+	set repeat 3
+	set order random
+	set description "Repeatedly runs another item"
+	set cycles 24
+	set continuous no
+	set break_if_on_first yes
+	set break_if never
+	setcycle 0 mix_sti They
+	setcycle 0 mix_cate Other
+	setcycle 0 mix_corr_resp j
+	setcycle 0 Color blue
+	setcycle 1 mix_sti Them
+	setcycle 1 mix_cate Other
+	setcycle 1 mix_corr_resp j
+	setcycle 1 Color blue
+	setcycle 2 mix_sti Theirs
+	setcycle 2 mix_cate Other
+	setcycle 2 mix_corr_resp j
+	setcycle 2 Color blue
+	setcycle 3 mix_sti Their
+	setcycle 3 mix_cate Other
+	setcycle 3 mix_corr_resp j
+	setcycle 3 Color blue
+	setcycle 4 mix_sti Themselves
+	setcycle 4 mix_cate Other
+	setcycle 4 mix_corr_resp j
+	setcycle 4 Color blue
+	setcycle 5 mix_sti Those
+	setcycle 5 mix_cate Other
+	setcycle 5 mix_corr_resp j
+	setcycle 5 Color blue
+	setcycle 6 mix_sti I
+	setcycle 6 mix_cate self
+	setcycle 6 mix_corr_resp f
+	setcycle 6 Color blue
+	setcycle 7 mix_sti Me
+	setcycle 7 mix_cate self
+	setcycle 7 mix_corr_resp f
+	setcycle 7 Color blue
+	setcycle 8 mix_sti Mine
+	setcycle 8 mix_cate self
+	setcycle 8 mix_corr_resp f
+	setcycle 8 Color blue
+	setcycle 9 mix_sti Myself
+	setcycle 9 mix_cate self
+	setcycle 9 mix_corr_resp f
+	setcycle 9 Color blue
+	setcycle 10 mix_sti My
+	setcycle 10 mix_cate self
+	setcycle 10 mix_corr_resp f
+	setcycle 10 Color blue
+	setcycle 11 mix_sti Oneself
+	setcycle 11 mix_cate self
+	setcycle 11 mix_corr_resp f
+	setcycle 11 Color blue
+	setcycle 12 mix_sti Cecil
+	setcycle 12 mix_cate Old
+	setcycle 12 mix_corr_resp j
+	setcycle 12 Color black
+	setcycle 13 mix_sti Edgar
+	setcycle 13 mix_cate Old
+	setcycle 13 mix_corr_resp j
+	setcycle 13 Color black
+	setcycle 14 mix_sti Wilber
+	setcycle 14 mix_cate Old
+	setcycle 14 mix_corr_resp j
+	setcycle 14 Color black
+	setcycle 15 mix_sti Mortimer
+	setcycle 15 mix_cate Old
+	setcycle 15 mix_corr_resp j
+	setcycle 15 Color black
+	setcycle 16 mix_sti Donald
+	setcycle 16 mix_cate Old
+	setcycle 16 mix_corr_resp j
+	setcycle 16 Color black
+	setcycle 17 mix_sti Walter
+	setcycle 17 mix_cate Old
+	setcycle 17 mix_corr_resp j
+	setcycle 17 Color black
+	setcycle 18 mix_sti Brad
+	setcycle 18 mix_cate Young
+	setcycle 18 mix_corr_resp f
+	setcycle 18 Color black
+	setcycle 19 mix_sti Erik
+	setcycle 19 mix_cate Young
+	setcycle 19 mix_corr_resp f
+	setcycle 19 Color black
+	setcycle 20 mix_sti Joey
+	setcycle 20 mix_cate Young
+	setcycle 20 mix_corr_resp f
+	setcycle 20 Color black
+	setcycle 21 mix_sti Billy
+	setcycle 21 mix_cate Young
+	setcycle 21 mix_corr_resp f
+	setcycle 21 Color black
+	setcycle 22 mix_sti Chad
+	setcycle 22 mix_cate Young
+	setcycle 22 mix_corr_resp f
+	setcycle 22 Color black
+	setcycle 23 mix_sti Mike
+	setcycle 23 mix_cate Young
+	setcycle 23 mix_corr_resp f
+	setcycle 23 Color black
+	run block3_seq
+
+define sequence block3_seq
+	set flush_keyboard yes
+	set description "Runs a number of items in sequence"
+	run mix_skt always
+	run mix_resp always
+	run mix_fdb always
+	run logger always
+
+define loop block4_loop
+	set source table
+	set repeat 3
+	set order random
+	set description "Repeatedly runs another item"
+	set cycles 12
+	set continuous no
+	set break_if_on_first yes
+	set break_if never
+	setcycle 0 prn_sti_swp They
+	setcycle 0 prn_cate_swp Other
+	setcycle 0 prn_corr_resp_swp f
+	setcycle 1 prn_sti_swp Them
+	setcycle 1 prn_cate_swp Other
+	setcycle 1 prn_corr_resp_swp f
+	setcycle 2 prn_sti_swp Theirs
+	setcycle 2 prn_cate_swp Other
+	setcycle 2 prn_corr_resp_swp f
+	setcycle 3 prn_sti_swp Their
+	setcycle 3 prn_cate_swp Other
+	setcycle 3 prn_corr_resp_swp f
+	setcycle 4 prn_sti_swp Themselves
+	setcycle 4 prn_cate_swp Other
+	setcycle 4 prn_corr_resp_swp f
+	setcycle 5 prn_sti_swp Those
+	setcycle 5 prn_cate_swp Other
+	setcycle 5 prn_corr_resp_swp f
+	setcycle 6 prn_sti_swp I
+	setcycle 6 prn_cate_swp self
+	setcycle 6 prn_corr_resp_swp j
+	setcycle 7 prn_sti_swp Me
+	setcycle 7 prn_cate_swp self
+	setcycle 7 prn_corr_resp_swp j
+	setcycle 8 prn_sti_swp Mine
+	setcycle 8 prn_cate_swp self
+	setcycle 8 prn_corr_resp_swp j
+	setcycle 9 prn_sti_swp Myself
+	setcycle 9 prn_cate_swp self
+	setcycle 9 prn_corr_resp_swp j
+	setcycle 10 prn_sti_swp My
+	setcycle 10 prn_cate_swp self
+	setcycle 10 prn_corr_resp_swp j
+	setcycle 11 prn_sti_swp Oneself
+	setcycle 11 prn_cate_swp self
+	setcycle 11 prn_corr_resp_swp j
+	run block4_seq
+
+define sequence block4_seq
+	set flush_keyboard yes
+	set description "Runs a number of items in sequence"
+	run prn_skt_swp always
+	run prn_resp_swp always
+	run prn_fdb_swp always
+	run logger always
+
+define loop block5_loop
+	set source table
+	set repeat 3
+	set order random
+	set description "Repeatedly runs another item"
+	set cycles 24
+	set continuous no
+	set break_if_on_first yes
+	set break_if never
+	setcycle 0 mix_sti_swp They
+	setcycle 0 mix_cate_swp Other
+	setcycle 0 mix_corr_resp_swp f
+	setcycle 0 Color_swp blue
+	setcycle 1 mix_sti_swp Them
+	setcycle 1 mix_cate_swp Other
+	setcycle 1 mix_corr_resp_swp f
+	setcycle 1 Color_swp blue
+	setcycle 2 mix_sti_swp Theirs
+	setcycle 2 mix_cate_swp Other
+	setcycle 2 mix_corr_resp_swp f
+	setcycle 2 Color_swp blue
+	setcycle 3 mix_sti_swp Their
+	setcycle 3 mix_cate_swp Other
+	setcycle 3 mix_corr_resp_swp f
+	setcycle 3 Color_swp blue
+	setcycle 4 mix_sti_swp Themselves
+	setcycle 4 mix_cate_swp Other
+	setcycle 4 mix_corr_resp_swp f
+	setcycle 4 Color_swp blue
+	setcycle 5 mix_sti_swp Those
+	setcycle 5 mix_cate_swp Other
+	setcycle 5 mix_corr_resp_swp f
+	setcycle 5 Color_swp blue
+	setcycle 6 mix_sti_swp I
+	setcycle 6 mix_cate_swp self
+	setcycle 6 mix_corr_resp_swp j
+	setcycle 6 Color_swp blue
+	setcycle 7 mix_sti_swp Me
+	setcycle 7 mix_cate_swp self
+	setcycle 7 mix_corr_resp_swp j
+	setcycle 7 Color_swp blue
+	setcycle 8 mix_sti_swp Mine
+	setcycle 8 mix_cate_swp self
+	setcycle 8 mix_corr_resp_swp j
+	setcycle 8 Color_swp blue
+	setcycle 9 mix_sti_swp Myself
+	setcycle 9 mix_cate_swp self
+	setcycle 9 mix_corr_resp_swp j
+	setcycle 9 Color_swp blue
+	setcycle 10 mix_sti_swp My
+	setcycle 10 mix_cate_swp self
+	setcycle 10 mix_corr_resp_swp j
+	setcycle 10 Color_swp blue
+	setcycle 11 mix_sti_swp Oneself
+	setcycle 11 mix_cate_swp self
+	setcycle 11 mix_corr_resp_swp j
+	setcycle 11 Color_swp blue
+	setcycle 12 mix_sti_swp Cecil
+	setcycle 12 mix_cate_swp Old
+	setcycle 12 mix_corr_resp_swp f
+	setcycle 12 Color_swp black
+	setcycle 13 mix_sti_swp Edgar
+	setcycle 13 mix_cate_swp Old
+	setcycle 13 mix_corr_resp_swp f
+	setcycle 13 Color_swp black
+	setcycle 14 mix_sti_swp Wilber
+	setcycle 14 mix_cate_swp Old
+	setcycle 14 mix_corr_resp_swp f
+	setcycle 14 Color_swp black
+	setcycle 15 mix_sti_swp Mortimer
+	setcycle 15 mix_cate_swp Old
+	setcycle 15 mix_corr_resp_swp f
+	setcycle 15 Color_swp black
+	setcycle 16 mix_sti_swp Donald
+	setcycle 16 mix_cate_swp Old
+	setcycle 16 mix_corr_resp_swp f
+	setcycle 16 Color_swp black
+	setcycle 17 mix_sti_swp Walter
+	setcycle 17 mix_cate_swp Old
+	setcycle 17 mix_corr_resp_swp f
+	setcycle 17 Color_swp black
+	setcycle 18 mix_sti_swp Brad
+	setcycle 18 mix_cate_swp Young
+	setcycle 18 mix_corr_resp_swp j
+	setcycle 18 Color_swp black
+	setcycle 19 mix_sti_swp Erik
+	setcycle 19 mix_cate_swp Young
+	setcycle 19 mix_corr_resp_swp j
+	setcycle 19 Color_swp black
+	setcycle 20 mix_sti_swp Joey
+	setcycle 20 mix_cate_swp Young
+	setcycle 20 mix_corr_resp_swp j
+	setcycle 20 Color_swp black
+	setcycle 21 mix_sti_swp Billy
+	setcycle 21 mix_cate_swp Young
+	setcycle 21 mix_corr_resp_swp j
+	setcycle 21 Color_swp black
+	setcycle 22 mix_sti_swp Chad
+	setcycle 22 mix_cate_swp Young
+	setcycle 22 mix_corr_resp_swp j
+	setcycle 22 Color_swp black
+	setcycle 23 mix_sti_swp Mike
+	setcycle 23 mix_cate_swp Young
+	setcycle 23 mix_corr_resp_swp j
+	setcycle 23 Color_swp black
+	run block5_seq
+
+define sequence block5_seq
+	set flush_keyboard yes
+	set description "Runs a number of items in sequence"
+	run mix_skt_swp always
+	run mix_resp_swp always
+	run mix_fdb_swap always
+	run logger always
+
+define sequence experiment
+	set flush_keyboard yes
+	set description "Runs a number of items in sequence"
+	run getting_started always
+	run welcome always
+	run Inst1 always
+	run block1_loop always
+	run Inst2 always
+	run block2_loop always
+	run Inst3 always
+	run block3_loop always
+	run Inst4 always
+	run block4_loop always
+	run Inst5 always
+	run block5_loop always
+
+define notepad getting_started
+	__note__
+	Welcome to OpenSesame 3.3 "Lentiform Loewenfeld"!
+	If you are new to OpenSesame, it is a good idea to follow one of the tutorials,
+	which can be found on the documentation site:
+	- <http://osdoc.cogsci.nl/>
+	You can also check out the examples. These can be opened via:
+	- Menu -> Tools -> Example experiments.
+	And feel free to ask for help on the forum:
+	- <http://forum.cogsci.nl/>
+	Have fun with OpenSesame!
+	__end__
+	set description "A simple notepad to document your experiment. This plug-in does nothing."
+
+define logger logger
+	set description "Logs experimental data"
+	set auto_log yes
+
+define feedback mix_fdb
+	set reset_variables yes
+	set duration 1000
+	set description "Provides feedback to the participant"
+	draw textline center=1 color="#00ff00" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if="[response_mix_resp] == [mix_corr_resp]" text="Correct!" x=0 y=0 z_index=0
+	draw textline center=1 color="#ff0000" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if="[response_mix_resp] != [mix_corr_resp]" text="Incorrect!" x=0 y=0 z_index=0
+
+define feedback mix_fdb_swap
+	set reset_variables yes
+	set duration 1000
+	set description "Provides feedback to the participant"
+	draw textline center=1 color="#00ff00" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if="[response_mix_resp_swp] == [mix_corr_resp_swp]" text="Correct!" x=0 y=0 z_index=0
+	draw textline center=1 color="#ff0000" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if="[response_mix_resp_swp] != [mix_corr_resp_swp]" text="Incorrect!" x=0 y=0 z_index=0
+
+define keyboard_response mix_resp
+	set timeout infinite
+	set flush yes
+	set event_type keypress
+	set duration keypress
+	set description "Collects keyboard responses"
+	set correct_response "[mix_corr_resp]"
+	set allowed_responses "f;j"
+
+define keyboard_response mix_resp_swp
+	set timeout infinite
+	set flush yes
+	set event_type keypress
+	set duration keypress
+	set description "Collects keyboard responses"
+	set correct_response "[mix_corr_resp_swp]"
+	set allowed_responses "f;j"
+
+define sketchpad mix_skt
+	set duration 0
+	set description "Displays stimuli"
+	draw textline center=1 color="[Color]" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text="[mix_sti]" x=0 y=0 z_index=0
+	draw textline center=1 color="#0000ff" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=SELF x=-416 y=-288 z_index=0
+	draw textline center=1 color="#0000ff" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=OTHER x=416 y=-288 z_index=0
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=YOUNG x=-416 y=-320 z_index=0
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=OLD x=416 y=-320 z_index=0
+
+define sketchpad mix_skt_swp
+	set duration 0
+	set description "Displays stimuli"
+	draw textline center=1 color="[Color_swp]" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text="[mix_sti_swp]" x=-6 y=-64 z_index=0
+	draw textline center=1 color="#0000ff" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=SELF x=416 y=-288 z_index=0
+	draw textline center=1 color="#0000ff" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=OTHER x=-416 y=-288 z_index=0
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=YOUNG x=416 y=-320 z_index=0
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=OLD x=-416 y=-320 z_index=0
+
+define feedback name_fdb
+	set reset_variables yes
+	set duration 1000
+	set description "Provides feedback to the participant"
+	draw textline center=1 color="#00ff00" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if="[response_name_resp] == [name_corr_resp]" text="Correct!" x=0 y=0 z_index=0
+	draw textline center=1 color="#ff0000" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if="[response_name_resp] != [name_corr_resp]" text="Incorrect!" x=0 y=0 z_index=0
+
+define keyboard_response name_resp
+	set timeout infinite
+	set flush yes
+	set event_type keypress
+	set duration keypress
+	set description "Collects keyboard responses"
+	set correct_response "[name_corr_resp]"
+	set allowed_responses "f;j"
+
+define sketchpad name_skt
+	set duration 0
+	set description "Displays stimuli"
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text="[name_sti]" x=0 y=0 z_index=0
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=YOUNG x=-416 y=-320 z_index=0
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=OLD x=416 y=-320 z_index=0
+
+define feedback prn_fdb
+	set reset_variables yes
+	set duration 1000
+	set description "Provides feedback to the participant"
+	draw textline center=1 color="#00ff00" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if="[response_prn_resp] == [prn_corr_resp]" text="Correct!" x=0 y=0 z_index=0
+	draw textline center=1 color="#ff0000" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if="[response_prn_resp] != [prn_corr_resp]" text="Incorrect!" x=0 y=0 z_index=0
+
+define feedback prn_fdb_swp
+	set reset_variables yes
+	set duration 1000
+	set description "Provides feedback to the participant"
+	draw textline center=1 color="#00ff00" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if="[response_prn_resp_swp] == [prn_corr_resp_swp]" text="Correct!" x=0 y=0 z_index=0
+	draw textline center=1 color="#ff0000" font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if="[response_prn_resp_swp] != [prn_corr_resp_swp]" text="Incorrect!" x=0 y=0 z_index=0
+
+define keyboard_response prn_resp
+	set timeout infinite
+	set flush yes
+	set event_type keypress
+	set duration keypress
+	set description "Collects keyboard responses"
+	set correct_response "[prn_corr_resp]"
+	set allowed_responses "f;j"
+
+define keyboard_response prn_resp_swp
+	set timeout infinite
+	set flush yes
+	set event_type keypress
+	set duration keypress
+	set description "Collects keyboard responses"
+	set correct_response "[prn_corr_resp_swp]"
+	set allowed_responses "f;j"
+
+define sketchpad prn_skt
+	set duration 0
+	set description "Displays stimuli"
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text="[prn_sti]" x=0 y=0 z_index=0
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=SELF x=-416 y=-320 z_index=0
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=OTHER x=416 y=-320 z_index=0
+
+define sketchpad prn_skt_swp
+	set duration 0
+	set description "Displays stimuli"
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text="[prn_sti_swp]" x=0 y=0 z_index=0
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=SELF x=416 y=-320 z_index=0
+	draw textline center=1 color="#000000" font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=always text=OTHER x=-416 y=-320 z_index=0
+
+define sketchpad welcome
+	set start_response_interval no
+	set reset_variables no
+	set duration keypress
+	set description "Displays stimuli"
+	draw textline center=1 color="#000000" font_bold=no font_family=serif font_italic=no font_size=32 html=yes show_if=always text="It's a test!" x=2 y=-39 z_index=0
+

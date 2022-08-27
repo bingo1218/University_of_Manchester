@@ -1,0 +1,12 @@
+"0","Q3 <- read_csv(""assignment_2_dataset_3.csv"")"
+"2","[1mRows: [22m[34m148[39m [1mColumns: [22m[34m5[39m
+"
+"2","[36m--[39m [1mColumn specification[22m [36m-------------------------------------------[39m
+[1mDelimiter:[22m "",""
+[32mdbl[39m (5): participant, positiveprime_positivetarget, positivepri...
+"
+"2","
+[36mi[39m Use [38;5;251m[48;5;235m[38;5;251m[48;5;235m`spec()`[48;5;235m[38;5;251m[49m[39m to retrieve the full column specification for this data.
+[36mi[39m Specify the column types or set [38;5;251m[48;5;235m[38;5;251m[48;5;235m`show_col_types = FALSE`[48;5;235m[38;5;251m[49m[39m to quiet this message.
+"
+"0","as_tibble(Q3)"

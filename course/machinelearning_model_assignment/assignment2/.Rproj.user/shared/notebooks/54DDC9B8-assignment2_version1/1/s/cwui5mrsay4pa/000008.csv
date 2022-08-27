@@ -1,0 +1,1 @@
+"0","plot(effect(""dis"", mod = lm.ns.lstat10, partial.residuals = TRUE))"

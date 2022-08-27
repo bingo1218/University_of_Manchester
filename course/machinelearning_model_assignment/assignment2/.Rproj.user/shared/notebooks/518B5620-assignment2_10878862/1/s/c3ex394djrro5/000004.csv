@@ -1,0 +1,3 @@
+"0","plot(effect(""dis"", mod = lm.fit.lstat3, partial.residuals = TRUE))"
+"2","NOTE: dis does not appear in the model
+"

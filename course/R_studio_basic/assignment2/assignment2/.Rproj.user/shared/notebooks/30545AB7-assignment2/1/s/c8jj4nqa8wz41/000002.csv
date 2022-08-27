@@ -1,0 +1,11 @@
+"0","Q1_tided <- Q1 %>%"
+"0","  mutate(condition = factor(condition)) %>%"
+"0","  rename(RT = response_time) %>%"
+"0","  mutate(condition = recode(condition,"
+"0","                            ""condition_a"" = ""Normal"","
+"0","                            ""condition_b"" = ""Degrade""))"
+"2","Error: Problem with `mutate()` column `condition`.
+[34mi[39m `condition = recode(condition, condition_a = ""Normal"", condition_b = ""Degrade"")`.
+[31mx[39m unused arguments (condition_a = ""Normal"", condition_b = ""Degrade"")
+[90mRun `rlang::last_error()` to see where the error occurred.[39m
+"

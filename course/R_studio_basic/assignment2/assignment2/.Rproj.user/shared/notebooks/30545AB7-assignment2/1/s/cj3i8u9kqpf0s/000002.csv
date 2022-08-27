@@ -1,0 +1,6 @@
+"0","Q2_tided <- Q2 %>%"
+"0","  mutate(condition = factor(condition)) %>%"
+"0","  rename(RT = response_time) %>%"
+"0","  mutate(condition = recode(condition,"
+"0","                            ""condition_a"" = ""Normal"","
+"0","                            ""condition_b"" = ""Degrade""))"

@@ -1,0 +1,19 @@
+"0","attach(ClassificationData)"
+"2","The following objects are masked from ClassificationData (pos = 3):
+
+    Age, CompPrice, Price, Sales, Salesbs, Salesns, ShelveLoc
+
+"
+"2","The following objects are masked from ClassificationData (pos = 4):
+
+    Age, CompPrice, Price, Sales, ShelveLoc
+
+"
+"2","The following objects are masked from ClassificationData (pos = 5):
+
+    Age, CompPrice, Price, Sales, ShelveLoc
+
+"
+"0","fit <- glm(ShelveLoc ~ Sales + CompPrice + Price + Age, family = ""binomial"")"
+"0",""
+"0","plot(effect(""Sales"", mod = fit, partial.residuals=TRUE), type=""response"")"

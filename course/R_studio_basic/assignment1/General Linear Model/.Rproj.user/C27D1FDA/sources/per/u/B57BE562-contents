@@ -1,0 +1,99 @@
+# the factors that best predict the rating of coffee
+# load the packages
+library(tidyverse) # Load the tidyverse packages
+library(Hmisc) # Needed for correlation
+library(MASS) # Needed for maths functions
+library(car) # Needed for VIF calculation
+library(olsrr) # Needed for stepwise regression 
+library(performance) # Needed to check model assumptions
+library(ggcorrplot) # Needed to draw correlation heatmaps\
+
+# read in the data
+coffee_ratings <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-07/coffee_ratings.csv')
+flavour_relavent_factors <- dplyr::select(coffee_ratings, c(flavor, aroma, aftertaste, acidity, body, balance, sweetness, uniformity, clean_cup, moisture))
+corr <- cor(flavour_relavent_factors)
+ggcorrplot(corr, type = "lower", lab = TRUE)
+
+flavour_relavent_factors_drop0 <- filter(flavour_relavent_factors, flavor != "0")
+
+corr_drop0 <- cor(flavour_relavent_factors_drop0)
+ggcorrplot(corr_drop0, type = "lower", lab = TRUE)
+
+ggplot(flavour_relavent_factors_drop0, aes(x = flavor, y = aroma)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(text = element_text(size = 13)) 
+
+ggplot(flavour_relavent_factors_drop0, aes(x = flavor, y = aftertaste)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(text = element_text(size = 13)) 
+
+ggplot(flavour_relavent_factors_drop0, aes(x = flavor, y = acidity)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(text = element_text(size = 13)) 
+
+ggplot(flavour_relavent_factors_drop0, aes(x = flavor, y = body)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(text = element_text(size = 13))
+
+ggplot(flavour_relavent_factors_drop0, aes(x = flavor, y = sweetness)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(text = element_text(size = 13))
+
+ggplot(flavour_relavent_factors_drop0, aes(x = flavor, y = acidity)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(text = element_text(size = 13))
+
+ggplot(flavour_relavent_factors_drop0, aes(x = flavor, y = uniformity)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(text = element_text(size = 13))
+
+ggplot(flavour_relavent_factors_drop0, aes(x = flavor, y = clean_cup)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(text = element_text(size = 13))
+
+ggplot(flavour_relavent_factors_drop0, aes(x = flavor, y = moisture)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  theme(text = element_text(size = 13))
+
+model0 <- lm(flavor ~ 1, data = flavour_relavent_factors_drop0)
+model1 <- lm(flavor ~ aroma + aftertaste + acidity + body + balance + sweetness + uniformity + clean_cup + moisture, data = flavour_relavent_factors_drop0)
+anova(model0, model1)
+
+check_model(model1)
+
+vif(model1)
+
+steplimitsboth <- step(model0, scope = list (lower = model0, upper = model1), direction = "both")
+check_model(steplimitsboth)
+summary(steplimitsboth)
+
+model2 <- lm(flavor ~ aftertaste + aroma + acidity + balance + clean_cup + body, data = flavour_relavent_factors_drop0)
+anova(model1, model2)
+AIC(model1)
+AIC(model2)
+
+pmodel <- ols_step_forward_p(model1)
+plot(pmodel)
+pmodel$k
+
+model4 <- lm(flavor ~ aroma + acidity + body + balance + clean_cup + uniformity, flavour_relavent_factors_drop0)
+newdata <- data.frame(aroma = 8, acidity = 7, body = 5, balance = 9, uniformity = 6, clean_cup = 9)
+predict(model4, newdata)

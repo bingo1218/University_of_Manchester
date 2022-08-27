@@ -1,0 +1,5 @@
+"0",""
+"0","#summary statis"
+"0","df2 %>%"
+"0","  group_by(condition) %>%"
+"0","  get_summary_stats(response_time, caffeine, type = ""mean_sd"")"
