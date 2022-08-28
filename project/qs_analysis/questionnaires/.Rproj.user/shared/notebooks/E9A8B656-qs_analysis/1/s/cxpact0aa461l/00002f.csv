@@ -1,0 +1,14 @@
+"0","qs_demographic_noconvert <- qs%>%
+  select(18:55) %>%
+  filter(Number = 1009) %>%
+  mutate(age_n = Age)
+"
+"1","[1m[33mError[39m in [38;5;254m`filter()`[39m:[22m
+[38;5;254m[33m![38;5;254m We detected a named input.
+[36mi[38;5;254m This usually means that you've used `=` instead of
+  `==`.
+[36mi[38;5;254m Did you mean `Number == 1009`?[39m
+Backtrace:
+[90m 1. [39mqs %>% select(18:55) %>% filter(Number = 1009) %>% ...
+[90m 4. [39m[1mdplyr[22m:::filter.data.frame(., Number = 1009)
+"

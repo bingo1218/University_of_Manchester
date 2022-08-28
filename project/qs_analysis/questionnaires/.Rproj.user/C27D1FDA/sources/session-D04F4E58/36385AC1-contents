@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidyverse)
+library(eeptools)
 ```
 
 ## Load data
@@ -24,11 +25,56 @@ qs <- read_xlsx(file_path) %>%
 
 ## select important data
 ```{r}
-subjects_number = 1002:1024
-
-qs_demographic <- qs%>%
+subjects_number <- c(1002:1008, 1010:1024)
+qs_demographic_ageconvert <- qs %>%
   select(18:55) %>%
-  filter(Number %in% subjects_number)
+  filter(Number %in% subjects_number) %>%
+  mutate(age_n = as.Date(paste(Age,"/01",sep=""),"%m/%Y/%d"))%>%
+  mutate(age_n = age_calc(age_n,enddate = as.Date('2022-08-01'),units = "years"))
 
+qs_demographic_noconvert <- qs %>%
+  select(18:55) %>%
+  filter(Number == 1009) %>%
+  mutate(age_n = Age)
+
+qs_demographic <-  rbind (qs_demographic_ageconvert,qs_demographic_noconvert) %>% 
+  mutate(age = age_n) %>%
+  select(-c(Age,age_n))
+
+```
+
+## Score reverse function
+```{r}
+score_reverse <- function(ini_score,total_score){
+  if(missing(total_score))
+     total_score <- 5
+  target_score <- total_score-ini_score
+  return(target_score)
+}
+```
+
+
+## BIS data calculation
+
+```{r}
+qs_demographic[qs_demographic == "Rarely/Never"] <- "1"
+qs_demographic[qs_demographic == "Occasionally"] <- "2"
+qs_demographic[qs_demographic == "Often"] <- "3"
+qs_demographic[qs_demographic == "Almost Always/Always"] <- "4"
+qs_demographic[6:36] <- lapply(qs_demographic[6:36], function(x) as.numeric(x))
+
+qs_final <- qs_demographic %>% 
+  mutate(Attention = `5` + score_reverse(`9`) + `11` + score_reverse(`20`) + `28`,
+         CogInstab = `6`+`24`+`26`,
+         Motor = 	`2`+ `3` + `4` + `17` + `19` + `22` + `25`,
+         Persever = `16` + `21` + `23` + score_reverse(`30`),
+         SelfControl = score_reverse(`1`) + score_reverse(`7`) + score_reverse(`8`) + score_reverse(`12`) + score_reverse(`13`) + `14`,
+         CogCompl = score_reverse(`10`) + score_reverse(`15`) + `18` + `27` +  score_reverse(`29`)) %>%
+  mutate (BDI_attentional = Attention +CogInstab,
+          BDI_motor = Motor + Persever,
+          BDI_Nnonplan = SelfControl + CogCompl) %>%
+  select(-c(6:36))
+
+write.csv(qs_final, file = "qs_Data.csv")
 ```
 

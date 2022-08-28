@@ -1,5 +1,0 @@
-"0","qs_demographic <- qs%>%
-  select(18:55) %>%
-  filter(Number == subjects_number)
-"
-"2","Warning: longer object length is not a multiple of shorter object length"
