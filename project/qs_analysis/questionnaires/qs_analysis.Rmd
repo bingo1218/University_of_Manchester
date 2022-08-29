@@ -74,5 +74,7 @@ qs_final <- qs_demographic %>%
           BDI_motor = Motor + Persever,
           BDI_Nnonplan = SelfControl + CogCompl) %>%
   select(-c(6:36))
+
+write.csv(qs_final, file = "qs_Data.csv")
 ```
 
