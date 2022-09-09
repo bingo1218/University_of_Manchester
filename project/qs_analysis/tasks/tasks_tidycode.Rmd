@@ -1,0 +1,141 @@
+---
+title: "tasks_analysis"
+author: '10878862'
+date: "2022-09-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = 'D:/UoM/data/behavioral_data')
+```
+
+```{r}
+library("fs")
+library(tidyverse)
+```
+
+
+```{r}
+setwd("D:/UoM/data/behavioral_data")
+myFiles <- list.files(path = 'D:/UoM/data/behavioral_data', pattern=glob2rx("*phase23*csv*"))
+
+final <- data.frame(subj = rep(NA, length(myFiles)),
+                   think = rep(NA, length(myFiles)),
+                   nothink = rep(NA, length(myFiles)),
+                   base = rep(NA, length(myFiles)))   
+
+for (i in 1:length(myFiles)){
+  dir <- myFiles[i]
+  data <- read_csv(dir)
+  think = c("condition1","condition2","condition3")
+  final$nothink[i] = colnames(data)[grepl("nothink",data, fixed = TRUE)]
+  final$base[i] = colnames(data)[grepl("base",data, fixed = TRUE)]
+  final$think[i] <- think[ think != final$nothink[i] & think != final$base[i]] 
+  final$subj[i] <- data$participant[1]
+  final$learn_test_all[i]
+}
+
+write.csv(final,"condition_trans.csv", row.names = FALSE)
+```
+
+
+## calculate index
+```{r}
+setwd("D:/UoM/data/behavioral_data")
+myFiles <- list.files(path = 'D:/UoM/data/behavioral_data', pattern=glob2rx("*phase23*csv*"))
+
+df <- data.frame(subj = rep(NA, length(myFiles)),
+                   learn_test_all = rep(NA, length(myFiles)),
+                   learn_test_cond1 = rep(NA, length(myFiles)),
+                   learn_test_cond2 = rep(NA, length(myFiles)),
+                   learn_test_cond3 = rep(NA, length(myFiles)),
+                   learn_test_prac = rep(NA, length(myFiles)),
+                   aware_cond1 = rep(NA, length(myFiles)),
+                   aware_cond2 = rep(NA, length(myFiles)),
+                   aware_cond3 = rep(NA, length(myFiles)),
+                   sp_test_cond1 = rep(NA, length(myFiles)),
+                   sp_test_cond2 = rep(NA, length(myFiles)),
+                   sp_test_cond3 = rep(NA, length(myFiles)),
+                   dp_test_cond1 = rep(NA, length(myFiles)),
+                   dp_test_cond2 = rep(NA, length(myFiles)),
+                   dp_test_cond2 = rep(NA, length(myFiles)))   
+
+for (i in 1:length(myFiles)){
+  dir <- myFiles[i]
+  data <- read_csv(dir, col_types = cols(`LearningTest.keys` = col_character()))
+  df$subj[i] <- data$participant[1]
+
+# data in first test of learning phase
+  learn_test_acc <- data %>%
+    filter(!is.na(`cond...5`)) %>%
+    filter(!is.na(LearningTest.keys)) %>%
+    mutate(condition = `cond...5`) %>%
+    group_by(`condition`,`LearningTest.keys`) %>%
+    summarise(number = n()) %>%
+    mutate(condi_total = sum(number)) %>%
+    ungroup(`condition`,`LearningTest.keys`)%>%
+    mutate(all = sum(number))%>%
+    mutate(acc_cond = number/condi_total, 
+           acc_all = number/all)  %>%
+    group_by(`condition`) %>%
+    filter(`LearningTest.keys` == 'f')%>%
+    select(condition, acc_all) %>%
+    spread(`condition`, `acc_all`) 
+  
+  learn_test_acc <- learn_test_acc %>%
+    mutate(prac1 = ifelse(("prac1" %in% colnames(learn_test_acc)),prac1,0),
+           prac2 = ifelse(("prac2" %in% colnames(learn_test_acc)),prac2,0)) %>%
+    mutate(prac = prac1 + prac2) %>% 
+    select(cond1,cond2,cond3,prac)
+
+# data in TNT phase (aware of associated word/memory invasion)
+  TNT_aware_n <- data %>%
+    filter(!is.na(`cond...5`)) %>%
+    filter(!is.na(`ratePrac_resp.keys`)) %>%
+    mutate(condition = `cond...5`, session = factor(`TNTphase.thisRepN`)) %>%
+    group_by(`condition`,session,`ratePrac_resp.keys`) %>%
+    summarise(number = n()) %>%
+    mutate(response_percentage = number/sum(number))
+  
+  # extract suppress number and all number 
+    
+
+  # data in same probe test phase
+  TNT_SP_test <- data %>%
+    filter(!is.na(`cond...5`)) %>%
+    filter(!is.na(`DT_resp.keys`)) %>%
+    mutate(condition = `cond...5`) %>%
+    group_by(`condition`,`DT_resp.keys`) %>%
+    summarise(number = n()) %>%
+    mutate(condi_total = sum(number)) %>%
+    ungroup(`condition`,`DT_resp.keys`)%>%
+    mutate(all = sum(number))%>%
+    mutate(acc_cond = number/condi_total, 
+           acc_all = number/all)  %>%
+    group_by(`condition`) %>%
+    filter(`DT_resp.keys` == 'f')%>%
+    select(condition, acc_cond) %>%
+    spread(`condition`, `acc_cond`) 
+
+# variable assignment
+  df$learn_test_all[i] <- sum(learn_test_acc)
+  df$learn_test_cond1[i] <- learn_test_acc$cond1 * 58 / 16
+  df$learn_test_cond2[i] <- learn_test_acc$cond2 * 58 / 16
+  df$learn_test_cond3[i] <- learn_test_acc$cond3 * 58 / 16
+  df$learn_test_prac[i] <- learn_test_acc$prac * 58 / 10
+  df$aware_cond1[i] <- 
+  df$aware_cond2[i] 
+  df$aware_cond3[i] 
+  df$sp_test_cond1[i] <- TNT_SP_test$cond1 
+  df$sp_test_cond2[i] <- TNT_SP_test$cond2 
+  df$sp_test_cond3[i] <- TNT_SP_test$cond3 
+  df$dp_test_cond1[i] 
+  df$dp_test_cond2[i] 
+  df$dp_test_cond2[i] 
+  
+}
+
+write.csv(df,"df.csv", row.names = FALSE)
+```
+

@@ -1,0 +1,79 @@
+---
+title: "behav_data_analysis"
+author: '10878862'
+date: "2022-09-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(ggsignif)
+```
+
+
+```{r}
+setwd("D:/UoM/data/behavioral_data")
+
+all_data <- read_excel("D:/UoM/University_of_Manchester/project/qs_analysis/all_related_data.xlsx")
+```
+
+# filter data
+
+```{r}
+subj_id = c(1003,1005,1006,1008,1010,1011,1012,1013,1014,1016,1017,1019,1020,1022,1023,1024,1025)
+
+all_data <- all_data %>%
+  filter(subj != 1018) 
+
+all_data %>%
+  filter(!is.na(age)) %>%
+  summarise(age_mean = mean(age), age_sd = sd(age))
+
+tidy_data <- all_data %>%
+  filter(subj != 1018) %>%
+  pivot_longer(cols = c(test2_think,
+                        test2_nothink,
+                        test2_base),
+               names_to = "Condition",
+               values_to = "Accuracy") %>%
+    mutate(Condition = dplyr::recode(Condition,
+                            "test2_think" = "think condition",
+                            "test2_nothink" = "no-think condition", 
+                            "test2_base" = "baseline condition"))
+```
+
+
+# plot
+```{r}
+set.seed(123)
+
+plot1 <- tidy_data %>%
+  ggplot(aes(x = Condition, y = Accuracy)) + 
+  geom_violin(aes(fill = Condition), 
+              trim = FALSE, 
+              width = 1, 
+              alpha = 0.4) +
+  geom_jitter(aes(fill = Condition),
+              shape = 21,
+              width = .2, 
+              alpha = 0.5, 
+              size = 2) + 
+  geom_boxplot(aes(fill = Condition), alpha = .5) + 
+  scale_fill_brewer(palette = "Set1") +
+  guides(fill = 'none') + 
+  theme_classic() + 
+  theme(axis.text.x = element_text(angle = 0, vjust = 1, hjust = 0.5)) +
+  labs(title = "Accuracy for Same Prob Test in three Conditions",
+       y = "Accuracy") + 
+   geom_signif(comparisons = list(c("baseline condition", "think condition")), annotations="NS",y_position = 1.25, tip_length = 0)
+plot1
+```
+
+
+
