@@ -1,6 +1,0 @@
-"0","score_reverse <- function(ini_score,total_score){"
-"0","  if(missing(total_score))"
-"0","     total_score <- 5"
-"0","  target_score <- total_score-ini_score"
-"0","  return(target_score)"
-"0","}"
